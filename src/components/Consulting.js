@@ -1,5 +1,6 @@
 import React from 'react';
 import '../assets/css/Style.css';
+import Card from './subcomponents/Card.js';
 
 const services = [
     {
@@ -24,15 +25,12 @@ export default function Consulting() {
     return (
         <div className="section" id="consulting">
             <h2 className="sectionHeader">Open to:</h2>
-            <div className="consultingIntro">
+            <div className="consultingIntro container">
                 <p>I'm available for flexible engagements with founders, startups, and growing teams. If you need product leadership or go-to-market support, let's talk.</p>
             </div>
-            <div className="consultingGrid">
+            <div className="consultingGrid container">
                 {services.map((s, i) => (
-                    <div className="consultingCard" key={i}>
-                        <h3 className="consultingTitle">{s.title}</h3>
-                        <p className="consultingDescription">{s.description}</p>
-                    </div>
+                    <Card key={i} title={s.title} description={s.description} />
                 ))}
             </div>
         </div>

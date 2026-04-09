@@ -43,7 +43,7 @@ export default function Experience() {
     return (
         <div className="section" id="experience">
             <h2 className="sectionHeader">Where I've worked:</h2>
-            <div className="experienceContainer">
+            <div className="experienceContainer container">
                 {workData.map((data, key) => (
                     <ExperienceCard key={key} name={data.name} title={data.title} time={data.time} description={data.description} link={data.link}/>
                 ))}
