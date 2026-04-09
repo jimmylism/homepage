@@ -12,7 +12,8 @@ export default function Header() {
             <div className="headerList">
                 <a className="headerLink" href="#about">About</a>
                 <a className="headerLink" href="#experience">Experience</a>
-                <a className="headerLink" href="https://drive.google.com/file/d/12d700BKlEFSAVJwq4G3m5QreoE5Xo31Z/view?usp=sharing">Resume</a>
+                <a className="headerLink" href="#projects">Projects</a>
+                <a className="headerLink" href="#consulting">Work with me</a>
                 <a className="headerLink" href="#contact">Contact</a>
             </div>
         </div>

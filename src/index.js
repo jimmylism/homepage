@@ -4,19 +4,21 @@ import './assets/css/Style.css';
 import Header from './components/Header.js';
 import Introduction from './components/Introduction.js';
 import About from './components/About.js';
-import Impact from './components/Impact.js'
 import Experience from './components/Experience.js';
+import Projects from './components/Projects.js';
+import Consulting from './components/Consulting.js';
 import Footer from './components/Footer.js';
 
 const App = () => {
     return(
     <div>
-        <Header></Header>
+        <Header/>
         <div className="body">
             <Introduction/>
             <About/>
-            <Impact/>
             <Experience/>
+            <Projects/>
+            <Consulting/>
             <Footer/>
         </div>
     </div>

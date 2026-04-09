@@ -5,63 +5,38 @@ import '../assets/css/Style.css';
 export default function Experience() {
     const workData = [
         {
-            name: "Lucid",
-            title: "Product manager",
-            time: "Jan 2022 - Now",
-            description: "Working to improve enterprise readiness in the areas of security and compliance.",
+            name: "Adobe",
+            title: "Product Manager",
+            description: "Working with the collaboration technology team, using data to enhance employee productivity.",
+            link: "https://www.adobe.com/",
+        },
+        {
+            name: "Splunk",
+            title: "Product Manager",
+            time: "Apr 2024 – Sep 2025",
+            description: "Drove the Dashboard Framework product, growing adoption across 20+ internal repositories and increasing dashboard views by 85%.",
+            link: "https://www.splunk.com/",
+        },
+        {
+            name: "Agnostiq (acquired by DataRobot)",
+            title: "Product & Product Marketing Manager",
+            time: "Nov 2023 – Apr 2024",
+            description: "Led go-to-market for the public beta of a developer orchestration platform for high-performance computing.",
+            link: "https://www.datarobot.com/",
+        },
+        {
+            name: "Lucid Software",
+            title: "Product Manager",
+            time: "Jan 2022 – Apr 2023",
+            description: "Managed enterprise readiness initiatives including audit logs, identity management, and document governance.",
             link: "https://lucid.co/",
         },
         {
-            name: "Hewlett Packard",
-            title: "Software engineer",
-            time: "Jan 2021 - Jan 2022",
-            description: "Full-stack engineer on InstantInk team working on enrollment flow.",
-            link: "https://instantink.hpconnected.com/",
-        },
-        {
-            name: "Northwestern Mutual",
-            title: "Front-end software engineer",
-            time: "Aug 2020 - Jan 2021",
-            description: "Implemented and maintained features for a React-based enterprise software, including its microservices. Wrote tests using Jest and React Testing Library to ensure code coverage.",
-            link: "https://northwesternmutual.com",
-        },
-        {
-            name: "MD Logistics",
-            title: "BI developer intern",
-            time: "Jun 2020 - Aug 2020",
-            description: "Developed automated reporting tool with 10+ KPIs to help executives with making business decisions. Automated weekly report generating process, slashing time spent on the process by over 90%.",
-            link: "https://www.mdlogistics.com/",
-        },
-        {
-            name: "Indiana University",
-            title: "Research assistant",
-            time: "Sep 2019 - Dec 2019",
-            description: "Created data visualizations for the research on publications and citations of various C.S. fields. Documented and cleaned code as well as writing workflows so that researchers can replicate visualization results.",
-            link: "https://luddy.indiana.edu/research/student-research/",
-        },
-        {
-            name: "Bastian Solutions",
-            title: "Software developer intern",
-            time: "Jun 2019 - Aug 2019",
-            description: "Developed back-end and front-end for a new documentation feature in a project-management software. Created sketches and mock-ups as a part of the design process.",
-            link: "https://www.bastiansolutions.com/",
-        },
-    ]
-
-    const leadershipData = [
-        {
-            name: "Indiana University Student Government",
-            title: "Program manager",
-            time: "Aug 2020 - Present",
-            description: "Lead a team of four software engineers to develop applications that are beneficial to IUSG and the general student body while motivating and mentoring the juniors on unfamiliar technologies and their careers.",
-            link: "https://iustudentgovernment.indiana.edu/",
-        },
-        {
-            name: "Asian American Association @ Indiana University",
-            title: "Marketing director",
-            time: "Feb 2019 - May 2020",
-            description: "Fostered a stronger Asian American community at Indiana University, increasing attendance of monthly meetings by over 30%. Coordinated the annual Indiana Asian American Conference with over 100 participants.",
-            link: "https://aaaiub.com",
+            name: "Hewlett-Packard",
+            title: "Software Engineer",
+            time: "Jan 2021 – Jan 2022",
+            description: "Built responsive UI and APIs for user enrollment experiences across multiple regions.",
+            link: "https://www.hp.com/",
         },
     ]
 
@@ -69,13 +44,9 @@ export default function Experience() {
         <div className="section" id="experience">
             <h2 className="sectionHeader">Where I've worked:</h2>
             <div className="experienceContainer">
-                {workData.map((data, key) => {return (
-                    <ExperienceCard key={key} name={data.name} title={data.title} time={data.time} description={data.description} link={data.link}/>)})}
-            </div>
-            <h2 className="sectionHeader">I displayed leadership at:</h2>
-            <div className="experienceContainer">
-                {leadershipData.map((data, key) => {return (
-                    <ExperienceCard key={key} name={data.name} title={data.title} time={data.time} description={data.description} link={data.link}/>)})}
+                {workData.map((data, key) => (
+                    <ExperienceCard key={key} name={data.name} title={data.title} time={data.time} description={data.description} link={data.link}/>
+                ))}
             </div>
         </div>
     )
