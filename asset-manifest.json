@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.b2c4a980.css",
-    "main.js": "/static/js/main.ef441ac5.js",
+    "main.css": "/static/css/main.b9a0ec87.css",
+    "main.js": "/static/js/main.11277cb3.js",
     "static/media/purrductivity.png": "/static/media/purrductivity.7bd5a3e06391190b3b71.png",
     "static/media/logo.png": "/static/media/logo.579d14e80707cedbf0ee.png",
     "index.html": "/index.html",
-    "main.b2c4a980.css.map": "/static/css/main.b2c4a980.css.map",
-    "main.ef441ac5.js.map": "/static/js/main.ef441ac5.js.map"
+    "main.b9a0ec87.css.map": "/static/css/main.b9a0ec87.css.map",
+    "main.11277cb3.js.map": "/static/js/main.11277cb3.js.map"
   },
   "entrypoints": [
-    "static/css/main.b2c4a980.css",
-    "static/js/main.ef441ac5.js"
+    "static/css/main.b9a0ec87.css",
+    "static/js/main.11277cb3.js"
   ]
 }
