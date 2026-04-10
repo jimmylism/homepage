@@ -60,6 +60,21 @@ export default function Companies() {
         return () => track.removeEventListener('scroll', handleScroll);
     }, [handleScroll]);
 
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 650px)');
+        const update = () => {
+            if (mq.matches) {
+                setMask('none');
+            } else {
+                const track = trackRef.current;
+                if (track) setMask(computeMask(track));
+            }
+        };
+        update();
+        mq.addEventListener('change', update);
+        return () => mq.removeEventListener('change', update);
+    }, []);
+
     const scrollToCard = (index) => {
         const track = trackRef.current;
         if (!track) return;
