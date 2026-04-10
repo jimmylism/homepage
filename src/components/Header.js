@@ -12,7 +12,7 @@ export default function Header() {
             <div className="headerList">
                 <a className="headerLink" href="#about">About</a>
                 <a className="headerLink" href="#experience">Experience</a>
-                <a className="headerLink" href="#projects">Projects</a>
+                <a className="headerLink" href="#companies">Portfolio</a>
                 <a className="headerLink" href="#consulting">Work with me</a>
                 <a className="headerLink" href="#contact">Contact</a>
             </div>

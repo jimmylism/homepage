@@ -5,7 +5,7 @@ import Header from './components/Header.js';
 import Introduction from './components/Introduction.js';
 import About from './components/About.js';
 import Experience from './components/Experience.js';
-import Projects from './components/Projects.js';
+import Companies from './components/Companies.js';
 import Consulting from './components/Consulting.js';
 import Footer from './components/Footer.js';
 
@@ -15,10 +15,10 @@ const App = () => {
         <Header/>
         <div className="body">
             <Introduction/>
-            <About/>
+            <Companies/>
             <Experience/>
             <Consulting/>
-            <Projects/>
+            <About/>
             <Footer/>
         </div>
     </div>

@@ -34,7 +34,7 @@ export default function Consulting() {
                 ))}
             </div>
             <div className="consultingCTA container">
-                <a className="ctaButton" href="mailto:jimmy1999.huang@gmail.com">Get in touch &rarr;</a>
+                <a className="ctaButton" href="mailto:jimmy1999.huang@gmail.com">Email me &rarr;</a>
             </div>
         </div>
     );
