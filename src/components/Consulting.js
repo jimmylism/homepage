@@ -33,6 +33,9 @@ export default function Consulting() {
                     <Card key={i} title={s.title} description={s.description} />
                 ))}
             </div>
+            <div className="consultingCTA container">
+                <a className="ctaButton" href="mailto:jimmy1999.huang@gmail.com">Get in touch &rarr;</a>
+            </div>
         </div>
     );
 }

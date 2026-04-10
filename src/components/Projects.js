@@ -13,11 +13,10 @@ export default function Projects() {
                         <div className="projectCardHeader">
                             <div>
                                 <h3 className="projectName">Purrductivity</h3>
-                                <p className="projectTagline">Simple. Focused. Yours.</p>
                             </div>
                         </div>
                         <p className="projectDescription">
-                            A unified productivity dashboard that consolidates todos, calendar, notes, timers, and habit trackers into one customizable interface — without the bloat.
+                            The productivity dashboard that gets out of your way.
                         </p>
                         <span className="projectLink">Visit site &rarr;</span>
                     </div>
