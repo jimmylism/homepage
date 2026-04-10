@@ -1,6 +1,7 @@
 import React from 'react';
 import '../assets/css/Style.css';
 import purrductivity from '../assets/img/purrductivity.png';
+import zenba from '../assets/img/zenba.png';
 
 export default function Projects() {
     return (
@@ -17,6 +18,20 @@ export default function Projects() {
                         </div>
                         <p className="projectDescription">
                             The productivity dashboard that gets out of your way.
+                        </p>
+                        <span className="projectLink">Visit site &rarr;</span>
+                    </div>
+                </a>
+                <a className="projectCard" href="https://v0-zenba.vercel.app/" target="_blank" rel="noreferrer">
+                    <img className="projectImage" src={zenba} alt="ZenBA screenshot" />
+                    <div className="projectCardBody">
+                        <div className="projectCardHeader">
+                            <div>
+                                <h3 className="projectName">ZenBA</h3>
+                            </div>
+                        </div>
+                        <p className="projectDescription">
+                            Breathing exercises for shareholder value maximizers.
                         </p>
                         <span className="projectLink">Visit site &rarr;</span>
                     </div>

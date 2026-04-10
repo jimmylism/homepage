@@ -265,6 +265,7 @@ a:hover {
 
 .projectsContainer {
     display: flex;
+    gap: 2rem;
 }
 
 .projectsContainer .projectCard {
