@@ -24,7 +24,7 @@ const services = [
 export default function Consulting() {
     return (
         <div className="section" id="consulting">
-            <h2 className="sectionHeader">Open to:</h2>
+            <h2 className="sectionHeader">Services:</h2>
             <div className="consultingIntro container">
                 <p>I'm available for flexible engagements with founders, startups, and growing teams. If you need product leadership or go-to-market support, let's talk.</p>
             </div>
