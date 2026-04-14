@@ -3,8 +3,10 @@ import '../assets/css/Style.css';
 import karis from '../assets/img/karis.png';
 import mira from '../assets/img/mira.png';
 import refix from '../assets/img/refix.png';
+import covalent from '../assets/img/covalent.png';
 
 const CARDS = [
+    { name: 'Covalent', subtitle: 'Acquired by DataRobot', href: 'https://www.covalent.xyz/', img: covalent, alt: 'Covalent', desc: 'Developer orchestration for GPUs and CPUs.' },
     { name: 'Refix', href: 'https://refix.ai/',           img: refix, alt: 'Refix', desc: 'Product analytics for teams that want to move fast.' },
     { name: 'Mira',  href: 'https://mira.ant-agent.ai/',  img: mira,  alt: 'Mira',  desc: 'Turn multimodal content into automated workflows.' },
     { name: 'Karis', href: 'https://karis.im/',            img: karis, alt: 'Karis', desc: 'Your personal team of GTM AI agents.' },
@@ -80,8 +82,24 @@ export default function Companies() {
         if (!track) return;
         const child = track.children[index];
         if (!child) return;
-        const offset = track.scrollLeft + child.getBoundingClientRect().left - track.getBoundingClientRect().left;
-        track.scrollTo({ left: offset, behavior: 'smooth' });
+        const target = track.scrollLeft + child.getBoundingClientRect().left - track.getBoundingClientRect().left;
+        const start = track.scrollLeft;
+        const distance = target - start;
+        const duration = 600;
+        const startTime = performance.now();
+        const ease = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        track.style.scrollSnapType = 'none';
+        const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            track.scrollLeft = start + distance * ease(progress);
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                track.style.scrollSnapType = '';
+            }
+        };
+        requestAnimationFrame(step);
     };
 
     return (
@@ -97,8 +115,9 @@ export default function Companies() {
                             <img className="projectImage companiesImage" src={card.img} alt={card.alt} />
                             <div className="projectCardBody">
                                 <div className="projectCardHeader">
-                                    <div>
+                                    <div className="projectNameBlock">
                                         <h3 className="projectName">{card.name}</h3>
+                                        {card.subtitle && <p className="projectTagline">{card.subtitle}</p>}
                                     </div>
                                 </div>
                                 <p className="projectDescription">{card.desc}</p>
