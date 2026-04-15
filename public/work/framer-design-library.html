@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Library — Framer Inspired</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0b;
+    --bg-2: #111113;
+    --bg-3: #18181c;
+    --bg-4: #1f1f24;
+    --bg-5: #26262d;
+    --surface: rgba(255,255,255,0.04);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+    --text-primary: #f0f0f2;
+    --text-secondary: #9a9aa6;
+    --text-tertiary: #5a5a68;
+    --accent: #7c68fe;
+    --accent-dim: rgba(124, 104, 254, 0.15);
+    --accent-glow: rgba(124, 104, 254, 0.3);
+    --green: #34d399;
+    --green-dim: rgba(52, 211, 153, 0.12);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251, 191, 36, 0.12);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.12);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.12);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.7);
+    --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── LAYOUT ─── */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .sidebar-logo {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-mark {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 16px; height: 16px; fill: white; }
+  .logo-text { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
+  .logo-version {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-family: var(--mono);
+    margin-left: auto;
+  }
+  .sidebar-section { padding: 8px 12px; }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 12px 8px 4px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+    text-decoration: none;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .sidebar-item:hover { color: var(--text-primary); background: var(--surface); }
+  .sidebar-item.active { color: var(--text-primary); background: var(--accent-dim); }
+  .sidebar-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+    flex-shrink: 0;
+  }
+  .sidebar-item.active .dot { background: var(--accent); }
+
+  /* ─── MAIN ─── */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    min-width: 0;
+    padding: 48px 56px;
+    max-width: calc(100% - 220px);
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    margin-bottom: 72px;
+    scroll-margin-top: 32px;
+  }
+  .section-header { margin-bottom: 32px; }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--mono);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+  }
+  .section-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+  .col { display: flex; flex-direction: column; gap: 12px; }
+  .demo-block {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-block::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 12px; right: 14px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  .type-hero {
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, #9a9aa6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .type-display {
+    font-size: 36px; font-weight: 600;
+    letter-spacing: -0.03em; line-height: 1.15;
+  }
+  .type-heading { font-size: 22px; font-weight: 600; letter-spacing: -0.025em; }
+  .type-subheading { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .type-body { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+  .type-small { font-size: 13px; color: var(--text-tertiary); }
+  .type-mono { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+  .type-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+
+  /* ─── COLORS ─── */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+  .color-swatch {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .color-fill { height: 60px; }
+  .color-info { padding: 8px 10px; background: var(--bg-4); }
+  .color-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+  .color-hex { font-size: 11px; font-family: var(--mono); color: var(--text-tertiary); }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+    text-decoration: none;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  .btn-primary:hover {
+    background: #8f7ffe;
+    box-shadow: 0 0 24px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-secondary:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.22); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+  }
+  .btn-ghost:hover { background: var(--surface); color: var(--text-primary); }
+  .btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+  .btn-danger:hover { background: rgba(248,113,113,0.2); }
+  .btn-sm { padding: 5px 12px; font-size: 12.5px; border-radius: var(--radius-sm); }
+  .btn-lg { padding: 12px 24px; font-size: 16px; border-radius: var(--radius-lg); }
+  .btn-icon { padding: 8px; border-radius: var(--radius-md); }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+  /* ─── BADGES ─── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .badge-default { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+  .badge-accent { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(124,104,254,0.25); }
+  .badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+  .badge-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+  .badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  /* ─── INPUTS ─── */
+  .input-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .input-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+  .input {
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 9px 13px;
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 14px;
+    width: 100%;
+    transition: all var(--transition);
+    outline: none;
+  }
+  .input::placeholder { color: var(--text-tertiary); }
+  .input:hover { border-color: var(--border-strong); }
+  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .input.input-error { border-color: rgba(248,113,113,0.5); }
+  .input.input-error:focus { box-shadow: 0 0 0 3px var(--red-dim); }
+  .input-hint { font-size: 12px; color: var(--text-tertiary); }
+  .input-error-text { font-size: 12px; color: var(--red); }
+  .input-group {
+    display: flex;
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: all var(--transition);
+  }
+  .input-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .input-group-prefix {
+    display: flex; align-items: center;
+    padding: 9px 12px;
+    border-right: 1px solid var(--border);
+    font-size: 13px; color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  .input-group .input { border: none; border-radius: 0; background: transparent; box-shadow: none; }
+  .input-group .input:focus { box-shadow: none; }
+  textarea.input { resize: vertical; min-height: 96px; line-height: 1.6; }
+  .select {
+    appearance: none;
+    background: var(--bg-4);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a5a68' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+  .checkbox-wrap { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+  .checkbox {
+    width: 17px; height: 17px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 4px;
+    background: var(--bg-4);
+    appearance: none;
+    cursor: pointer;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .checkbox:checked { background: var(--accent); border-color: var(--accent); }
+  .checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 1px;
+    width: 9px; height: 6px;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(-45deg);
+  }
+  .toggle {
+    width: 36px; height: 20px;
+    background: var(--bg-5);
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-full);
+    position: relative;
+    cursor: pointer;
+    transition: all var(--transition);
+    appearance: none;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    background: var(--text-tertiary);
+    border-radius: 50%;
+    top: 1px; left: 1px;
+    transition: all var(--transition);
+  }
+  .toggle:checked { background: var(--accent); border-color: var(--accent); }
+  .toggle:checked::after { transform: translateX(16px); background: white; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: all var(--transition);
+  }
+  .card-hover:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+  }
+  .card-body { padding: 24px; }
+  .card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-4);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+  .card-desc { font-size: 13.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.6; }
+
+  /* Feature card */
+  .feature-card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    transition: all var(--transition);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, var(--accent-dim) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-card:hover { border-color: rgba(124,104,254,0.3); box-shadow: 0 8px 32px rgba(124,104,254,0.1); }
+  .feature-icon {
+    width: 40px; height: 40px;
+    background: var(--accent-dim);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    border: 1px solid rgba(124,104,254,0.2);
+  }
+  .feature-icon svg { width: 20px; height: 20px; color: var(--accent); }
+
+  /* Pricing card */
+  .pricing-card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(124,104,254,0.08) 0%, var(--bg-3) 60%);
+  }
+  .pricing-card.featured::before {
+    content: 'Popular';
+    position: absolute;
+    top: 18px; right: -18px;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 28px;
+    transform: rotate(35deg);
+  }
+  .pricing-amount { font-size: 40px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  .pricing-amount span { font-size: 16px; font-weight: 400; color: var(--text-secondary); vertical-align: super; font-size: 14px; }
+  .pricing-period { font-size: 13px; color: var(--text-tertiary); margin-top: 2px; }
+  .pricing-features { margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
+  .pricing-feature { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary); }
+  .pricing-feature svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
+
+  /* ─── AVATARS ─── */
+  .avatar {
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+    border: 2px solid var(--bg);
+    overflow: hidden;
+  }
+  .avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+  .avatar-md { width: 36px; height: 36px; font-size: 13px; }
+  .avatar-lg { width: 48px; height: 48px; font-size: 16px; }
+  .avatar-xl { width: 64px; height: 64px; font-size: 20px; }
+  .avatar-group { display: flex; }
+  .avatar-group .avatar { margin-left: -8px; }
+  .avatar-group .avatar:first-child { margin-left: 0; }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    background: var(--bg-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .tag:hover { border-color: var(--border-strong); color: var(--text-primary); }
+  .tag .tag-x {
+    width: 12px; height: 12px;
+    opacity: 0.5;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── ALERTS ─── */
+  .alert {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    border: 1px solid;
+  }
+  .alert svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-content {}
+  .alert-title { font-weight: 600; margin-bottom: 2px; font-size: 13.5px; }
+  .alert-body { font-size: 13px; opacity: 0.85; line-height: 1.6; }
+  .alert-info { background: var(--blue-dim); border-color: rgba(96,165,250,0.25); color: var(--blue); }
+  .alert-success { background: var(--green-dim); border-color: rgba(52,211,153,0.25); color: var(--green); }
+  .alert-warning { background: var(--amber-dim); border-color: rgba(251,191,36,0.25); color: var(--amber); }
+  .alert-error { background: var(--red-dim); border-color: rgba(248,113,113,0.25); color: var(--red); }
+
+  /* ─── PROGRESS ─── */
+  .progress-track {
+    height: 6px;
+    background: var(--bg-5);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .progress-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; }
+  .progress-label { font-size: 13px; font-weight: 500; }
+  .progress-value { font-size: 12px; font-family: var(--mono); color: var(--text-tertiary); }
+
+  /* ─── TABS ─── */
+  .tabs { display: flex; gap: 2px; background: var(--bg-4); padding: 3px; border-radius: var(--radius-md); border: 1px solid var(--border); width: fit-content; }
+  .tab-item {
+    padding: 7px 16px;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none; background: transparent;
+    font-family: var(--font);
+  }
+  .tab-item:hover { color: var(--text-secondary); }
+  .tab-item.active { background: var(--bg-3); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+
+  /* ─── TOOLTIP ─── */
+  .tooltip-wrap { position: relative; display: inline-flex; }
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-5);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+    transition: all var(--transition);
+    z-index: 1000;
+  }
+  .tooltip-wrap:hover .tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead { background: var(--bg-4); border-bottom: 1px solid var(--border); }
+  th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  td { padding: 13px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background var(--transition); }
+  tbody tr:hover { background: var(--surface); }
+
+  /* ─── CODE ─── */
+  .code-block {
+    background: var(--bg-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-5);
+  }
+  .code-lang { font-size: 12px; font-family: var(--mono); color: var(--text-tertiary); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  pre {
+    padding: 18px 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+    color: var(--text-secondary);
+  }
+  .code-kw { color: var(--accent); }
+  .code-str { color: var(--green); }
+  .code-num { color: var(--amber); }
+  .code-fn { color: var(--blue); }
+  .code-cmt { color: var(--text-tertiary); font-style: italic; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+  .divider-label {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    margin: 20px 0;
+  }
+  .divider-label::before, .divider-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── STAT CARD ─── */
+  .stat-card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+  }
+  .stat-label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .stat-value { font-size: 32px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  .stat-change { margin-top: 6px; font-size: 12.5px; display: flex; align-items: center; gap: 4px; }
+  .stat-up { color: var(--green); }
+  .stat-down { color: var(--red); }
+
+  /* ─── SKELETON ─── */
+  @keyframes shimmer {
+    from { background-position: -400px 0; }
+    to { background-position: 400px 0; }
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--bg-4) 25%, var(--bg-5) 50%, var(--bg-4) 75%);
+    background-size: 400px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+  }
+  .skeleton-text { height: 14px; margin-bottom: 8px; }
+  .skeleton-h1 { height: 28px; margin-bottom: 12px; }
+  .skeleton-circle { border-radius: 50%; }
+
+  /* ─── MODAL ─── */
+  .modal-backdrop {
+    background: rgba(0,0,0,0.72);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    min-height: 340px;
+  }
+  .modal {
+    background: var(--bg-3);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  /* ─── GRID LAYOUT ─── */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  /* ─── HERO ─── */
+  .hero-section {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 400px; height: 300px;
+    background: radial-gradient(ellipse at center, rgba(124,104,254,0.12) 0%, transparent 70%);
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(124,104,254,0.25);
+    border-radius: var(--radius-full);
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .hero-actions { display: flex; gap: 10px; justify-content: center; margin-top: 24px; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg-5); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+  /* ─── HEADER BAR ─── */
+  .top-bar {
+    height: 52px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+    margin-bottom: 32px;
+    border-radius: var(--radius-md);
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--text-tertiary);
+  }
+  .breadcrumb .sep { opacity: 0.4; }
+  .breadcrumb .current { color: var(--text-primary); }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="logo-text">Design Library</span>
+      <span class="logo-version">v1.0</span>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Foundation</div>
+      <a class="sidebar-item active" href="#colors"><span class="dot"></span>Colors</a>
+      <a class="sidebar-item" href="#typography"><span class="dot"></span>Typography</a>
+      <a class="sidebar-item" href="#spacing"><span class="dot"></span>Spacing</a>
+      <a class="sidebar-item" href="#icons"><span class="dot"></span>Icons</a>
+
+      <div class="sidebar-label">Components</div>
+      <a class="sidebar-item" href="#buttons"><span class="dot"></span>Buttons</a>
+      <a class="sidebar-item" href="#badges"><span class="dot"></span>Badges & Tags</a>
+      <a class="sidebar-item" href="#inputs"><span class="dot"></span>Inputs</a>
+      <a class="sidebar-item" href="#cards"><span class="dot"></span>Cards</a>
+      <a class="sidebar-item" href="#alerts"><span class="dot"></span>Alerts</a>
+      <a class="sidebar-item" href="#progress"><span class="dot"></span>Progress</a>
+      <a class="sidebar-item" href="#navigation"><span class="dot"></span>Navigation</a>
+      <a class="sidebar-item" href="#data"><span class="dot"></span>Data Display</a>
+      <a class="sidebar-item" href="#overlays"><span class="dot"></span>Overlays</a>
+      <a class="sidebar-item" href="#feedback"><span class="dot"></span>Feedback</a>
+
+      <div class="sidebar-label">Patterns</div>
+      <a class="sidebar-item" href="#hero"><span class="dot"></span>Hero Section</a>
+      <a class="sidebar-item" href="#pricing"><span class="dot"></span>Pricing Cards</a>
+      <a class="sidebar-item" href="#code"><span class="dot"></span>Code Block</a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="breadcrumb">
+        <span>Library</span>
+        <span class="sep">/</span>
+        <span class="current">All Components</span>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+        <div class="badge badge-green"><span class="badge-dot"></span>Live</div>
+        <button class="btn btn-secondary btn-sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Export
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── HERO ─── -->
+    <div id="hero" class="section">
+      <div class="hero-section">
+        <div class="hero-glow"></div>
+        <div class="hero-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Framer Design System
+        </div>
+        <div class="type-hero" style="max-width:520px;margin:0 auto 16px;">Build beautiful interfaces faster</div>
+        <p class="type-body" style="max-width:380px;margin:0 auto;">A complete design library inspired by Framer's design aesthetic — dark, refined, motion-ready.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg">Get Started</button>
+          <button class="btn btn-secondary btn-lg">View on GitHub</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── COLORS ─── -->
+    <div id="colors" class="section">
+      <div class="section-header">
+        <div class="section-tag">Foundation</div>
+        <div class="section-title">Colors</div>
+        <div class="section-desc">A carefully curated palette built on semantic roles — backgrounds, surfaces, text, and accent layers.</div>
+      </div>
+
+      <div class="demo-block" data-label="Backgrounds">
+        <div class="color-grid">
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#0a0a0b;border-bottom:1px solid rgba(255,255,255,0.06)"></div>
+            <div class="color-info"><div class="color-name">BG</div><div class="color-hex">#0a0a0b</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#111113"></div>
+            <div class="color-info"><div class="color-name">BG 2</div><div class="color-hex">#111113</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#18181c"></div>
+            <div class="color-info"><div class="color-name">BG 3</div><div class="color-hex">#18181c</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#1f1f24"></div>
+            <div class="color-info"><div class="color-name">BG 4</div><div class="color-hex">#1f1f24</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#26262d"></div>
+            <div class="color-info"><div class="color-name">BG 5</div><div class="color-hex">#26262d</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Semantic">
+        <div class="color-grid">
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#7c68fe"></div>
+            <div class="color-info"><div class="color-name">Accent</div><div class="color-hex">#7c68fe</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#34d399"></div>
+            <div class="color-info"><div class="color-name">Green</div><div class="color-hex">#34d399</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#fbbf24"></div>
+            <div class="color-info"><div class="color-name">Amber</div><div class="color-hex">#fbbf24</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#f87171"></div>
+            <div class="color-info"><div class="color-name">Red</div><div class="color-hex">#f87171</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-fill" style="background:#60a5fa"></div>
+            <div class="color-info"><div class="color-name">Blue</div><div class="color-hex">#60a5fa</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Text">
+        <div class="col" style="gap:16px;">
+          <div style="font-size:16px;color:#f0f0f2">Primary — #f0f0f2</div>
+          <div style="font-size:16px;color:#9a9aa6">Secondary — #9a9aa6</div>
+          <div style="font-size:16px;color:#5a5a68">Tertiary — #5a5a68</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TYPOGRAPHY ─── -->
+    <div id="typography" class="section">
+      <div class="section-header">
+        <div class="section-tag">Foundation</div>
+        <div class="section-title">Typography</div>
+        <div class="section-desc">DM Sans for UI text, DM Mono for code. A clean scale from hero down to captions.</div>
+      </div>
+
+      <div class="demo-block col" data-label="Scale" style="gap:28px;">
+        <div><div class="type-label" style="margin-bottom:6px;">Hero — 52px / 600</div><div class="type-hero" style="font-size:48px">Build fast.</div></div>
+        <div><div class="type-label" style="margin-bottom:6px;">Display — 36px / 600</div><div class="type-display">Design with precision</div></div>
+        <div><div class="type-label" style="margin-bottom:6px;">Heading — 22px / 600</div><div class="type-heading">Component Library</div></div>
+        <div><div class="type-label" style="margin-bottom:6px;">Subheading — 16px / 500</div><div class="type-subheading">Build reusable UI components</div></div>
+        <div><div class="type-label" style="margin-bottom:6px;">Body — 15px / 400</div><div class="type-body">A well-crafted design system helps teams ship faster while maintaining visual consistency across every touchpoint.</div></div>
+        <div><div class="type-label" style="margin-bottom:6px;">Small — 13px / 400</div><div class="type-small">Used for metadata, timestamps, and secondary context</div></div>
+        <div><div class="type-label" style="margin-bottom:6px;">Mono — DM Mono 13px</div><div class="type-mono">const theme = { accent: '#7c68fe' }</div></div>
+      </div>
+    </div>
+
+    <!-- ─── BUTTONS ─── -->
+    <div id="buttons" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Buttons</div>
+        <div class="section-desc">Four intent variants × three sizes × icon support.</div>
+      </div>
+
+      <div class="demo-block" data-label="Variants">
+        <div class="row" style="flex-wrap:wrap;">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-danger">Destructive</button>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Sizes">
+        <div class="row" style="align-items:center;">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Default</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="With Icons">
+        <div class="row">
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Project
+          </button>
+          <button class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </button>
+          <button class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+          <button class="btn btn-secondary btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="States">
+        <div class="row">
+          <button class="btn btn-primary" disabled>Disabled</button>
+          <button class="btn btn-primary" style="opacity:0.7;cursor:wait;">
+            <svg style="animation:spin 1s linear infinite;width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>
+            Loading…
+          </button>
+          <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── BADGES & TAGS ─── -->
+    <div id="badges" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Badges & Tags</div>
+        <div class="section-desc">Status indicators, labels, and dismissible tags.</div>
+      </div>
+
+      <div class="demo-block" data-label="Badges">
+        <div class="row">
+          <span class="badge badge-default">Default</span>
+          <span class="badge badge-accent"><span class="badge-dot"></span>Accent</span>
+          <span class="badge badge-green"><span class="badge-dot"></span>Active</span>
+          <span class="badge badge-amber"><span class="badge-dot"></span>Pending</span>
+          <span class="badge badge-red"><span class="badge-dot"></span>Error</span>
+          <span class="badge badge-blue"><span class="badge-dot"></span>Info</span>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Tags">
+        <div class="row">
+          <span class="tag">framer</span>
+          <span class="tag">design-system</span>
+          <span class="tag">components</span>
+          <span class="tag">ui-kit</span>
+          <span class="tag">
+            typescript
+            <span class="tag-x">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── INPUTS ─── -->
+    <div id="inputs" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Inputs</div>
+        <div class="section-desc">Form controls including text inputs, selects, checkboxes, and toggles.</div>
+      </div>
+
+      <div class="demo-block" data-label="Text Inputs">
+        <div class="grid-2" style="gap:16px;">
+          <div class="input-wrap">
+            <label class="input-label">Default</label>
+            <input class="input" type="text" placeholder="Enter value…">
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">With hint</label>
+            <input class="input" type="email" placeholder="you@example.com">
+            <span class="input-hint">We'll never share your email.</span>
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Error state</label>
+            <input class="input input-error" type="text" value="invalid@">
+            <span class="input-error-text">Enter a valid email address.</span>
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">With prefix</label>
+            <div class="input-group">
+              <span class="input-group-prefix">https://</span>
+              <input class="input" type="text" placeholder="yoursite.com">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Other Controls">
+        <div class="grid-2" style="gap:20px;align-items:start;">
+          <div class="input-wrap">
+            <label class="input-label">Select</label>
+            <select class="input select">
+              <option>Option A</option>
+              <option>Option B</option>
+              <option>Option C</option>
+            </select>
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Textarea</label>
+            <textarea class="input" placeholder="Write something…" style="height:80px;"></textarea>
+          </div>
+          <div class="input-wrap" style="gap:12px;">
+            <label class="input-label">Checkboxes</label>
+            <label class="checkbox-wrap" style="font-size:14px;color:var(--text-secondary);">
+              <input type="checkbox" class="checkbox" checked> Enable animations
+            </label>
+            <label class="checkbox-wrap" style="font-size:14px;color:var(--text-secondary);">
+              <input type="checkbox" class="checkbox"> Show grid overlay
+            </label>
+          </div>
+          <div class="input-wrap" style="gap:12px;">
+            <label class="input-label">Toggles</label>
+            <label class="checkbox-wrap" style="font-size:14px;color:var(--text-secondary);">
+              <input type="checkbox" class="toggle" checked> Dark mode
+            </label>
+            <label class="checkbox-wrap" style="font-size:14px;color:var(--text-secondary);">
+              <input type="checkbox" class="toggle"> Auto-save
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CARDS ─── -->
+    <div id="cards" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Cards</div>
+        <div class="section-desc">Surface containers with header, body, and footer slots.</div>
+      </div>
+
+      <div class="demo-block" data-label="Basic Card">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Project Alpha</div>
+                <div class="card-desc" style="margin-top:2px">Last edited 2 hours ago</div>
+              </div>
+              <span class="badge badge-green"><span class="badge-dot"></span>Live</span>
+            </div>
+            <div class="card-body">
+              <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">A landing page for a SaaS product built with custom motion and micro-interactions throughout the experience.</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-ghost btn-sm">Preview</button>
+              <button class="btn btn-primary btn-sm" style="margin-left:auto">Edit</button>
+            </div>
+          </div>
+
+          <div class="card card-hover">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Design Tokens</div>
+                <div class="card-desc" style="margin-top:2px">Updated yesterday</div>
+              </div>
+              <span class="badge badge-amber"><span class="badge-dot"></span>Draft</span>
+            </div>
+            <div class="card-body">
+              <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">Core token definitions for spacing, color, typography, and motion — ready for export to CSS variables.</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-ghost btn-sm">Preview</button>
+              <button class="btn btn-primary btn-sm" style="margin-left:auto">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Feature Cards">
+        <div class="grid-3">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div class="card-title">Fast by default</div>
+            <div class="card-desc">Optimized rendering pipeline with hardware acceleration for buttery smooth 60fps animations.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </div>
+            <div class="card-title">Component system</div>
+            <div class="card-desc">Every element is a self-contained, composable unit — swap styles, swap variants, never break.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+            </div>
+            <div class="card-title">Live preview</div>
+            <div class="card-desc">See changes reflected in real time across every breakpoint without refreshing the browser.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="demo-block" data-label="Stat Cards">
+        <div class="grid-4">
+          <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value">$84.2k</div>
+            <div class="stat-change stat-up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +12.4%
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Users</div>
+            <div class="stat-value">3,841</div>
+            <div class="stat-change stat-up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +8.1%
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bounce Rate</div>
+            <div class="stat-value">24.6%</div>
+            <div class="stat-change stat-down">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+              −3.2%
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Conversion</div>
+            <div class="stat-value">6.4%</div>
+            <div class="stat-change stat-up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              +0.8%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── ALERTS ─── -->
+    <div id="alerts" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Alerts</div>
+        <div class="section-desc">Contextual feedback messages for info, success, warning, and error states.</div>
+      </div>
+
+      <div class="demo-block col" data-label="Variants">
+        <div class="alert alert-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div class="alert-content">
+            <div class="alert-title">New version available</div>
+            <div class="alert-body">Framer v2.4.0 introduces variable fonts and improved animation curves.</div>
+          </div>
+        </div>
+        <div class="alert alert-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div class="alert-content">
+            <div class="alert-title">Published successfully</div>
+            <div class="alert-body">Your site is live at framer.com/yoursite — changes are reflected instantly.</div>
+          </div>
+        </div>
+        <div class="alert alert-warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="alert-content">
+            <div class="alert-title">Usage limit approaching</div>
+            <div class="alert-body">You've used 85% of your monthly bandwidth. Consider upgrading your plan.</div>
+          </div>
+        </div>
+        <div class="alert alert-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div class="alert-content">
+            <div class="alert-title">Build failed</div>
+            <div class="alert-body">There was an error compiling your component. Check the console for details.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PROGRESS ─── -->
+    <div id="progress" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Progress</div>
+        <div class="section-desc">Linear progress bars for loading states and completion tracking.</div>
+      </div>
+
+      <div class="demo-block col" data-label="Progress Bars" style="gap:20px;">
+        <div class="progress-wrap">
+          <div class="progress-header">
+            <span class="progress-label">Components</span>
+            <span class="progress-value">87%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:87%;background:var(--accent)"></div></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-header">
+            <span class="progress-label">Interactions</span>
+            <span class="progress-value">64%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:64%;background:var(--blue)"></div></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-header">
+            <span class="progress-label">Tokens</span>
+            <span class="progress-value">100%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-header">
+            <span class="progress-label">Documentation</span>
+            <span class="progress-value">32%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:32%;background:var(--amber)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── NAVIGATION ─── -->
+    <div id="navigation" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Navigation</div>
+        <div class="section-desc">Tabs, breadcrumbs, tooltips, and navigation patterns.</div>
+      </div>
+
+      <div class="demo-block" data-label="Tabs">
+        <div class="tabs">
+          <button class="tab-item active" onclick="switchTab(this, 'all')">All</button>
+          <button class="tab-item" onclick="switchTab(this, 'components')">Components</button>
+          <button class="tab-item" onclick="switchTab(this, 'tokens')">Tokens</button>
+          <button class="tab-item" onclick="switchTab(this, 'templates')">Templates</button>
+        </div>
+        <p style="font-size:13px;color:var(--text-tertiary);margin-top:16px" id="tab-content">Showing all 128 items in the design system library.</p>
+      </div>
+
+      <div class="demo-block" data-label="Breadcrumb">
+        <div class="breadcrumb">
+          <span style="cursor:pointer;color:var(--text-secondary);transition:color 0.15s" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">Design System</span>
+          <span class="sep">/</span>
+          <span style="cursor:pointer;color:var(--text-secondary);transition:color 0.15s" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">Components</span>
+          <span class="sep">/</span>
+          <span class="current">Navigation</span>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Tooltips">
+        <div class="row" style="align-items:center;gap:24px;">
+          <div class="tooltip-wrap">
+            <button class="btn btn-secondary">Hover me</button>
+            <div class="tooltip">Edit this component</div>
+          </div>
+          <div class="tooltip-wrap">
+            <button class="btn btn-secondary btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </button>
+            <div class="tooltip">More information</div>
+          </div>
+          <div class="tooltip-wrap">
+            <button class="btn btn-ghost btn-sm">⌘K</button>
+            <div class="tooltip">Open command palette</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Dividers">
+        <div class="divider"></div>
+        <div class="divider-label">or continue with</div>
+        <div class="row" style="margin-top:12px;">
+          <button class="btn btn-secondary" style="flex:1;">Google</button>
+          <button class="btn btn-secondary" style="flex:1;">GitHub</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── DATA DISPLAY ─── -->
+    <div id="data" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Data Display</div>
+        <div class="section-desc">Tables, lists, and avatars for presenting structured data.</div>
+      </div>
+
+      <div class="demo-block" data-label="Table">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar avatar-sm" style="background:var(--accent-dim);color:var(--accent)">AK</div>
+                    <span style="font-weight:500;color:var(--text-primary)">Arya Kim</span>
+                  </div>
+                </td>
+                <td>Design Lead</td>
+                <td><span class="badge badge-green"><span class="badge-dot"></span>Active</span></td>
+                <td>Jan 2024</td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar avatar-sm" style="background:var(--blue-dim);color:var(--blue)">MR</div>
+                    <span style="font-weight:500;color:var(--text-primary)">Marco Ruiz</span>
+                  </div>
+                </td>
+                <td>Engineer</td>
+                <td><span class="badge badge-amber"><span class="badge-dot"></span>Pending</span></td>
+                <td>Mar 2024</td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar avatar-sm" style="background:var(--green-dim);color:var(--green)">SL</div>
+                    <span style="font-weight:500;color:var(--text-primary)">Sara Lee</span>
+                  </div>
+                </td>
+                <td>Product</td>
+                <td><span class="badge badge-green"><span class="badge-dot"></span>Active</span></td>
+                <td>Nov 2023</td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="demo-block" data-label="Avatars">
+        <div class="row" style="align-items:center;gap:24px;">
+          <div class="avatar avatar-sm" style="background:var(--accent-dim);color:var(--accent);">AK</div>
+          <div class="avatar avatar-md" style="background:var(--blue-dim);color:var(--blue);">MR</div>
+          <div class="avatar avatar-lg" style="background:var(--green-dim);color:var(--green);">SL</div>
+          <div class="avatar avatar-xl" style="background:var(--amber-dim);color:var(--amber);">JD</div>
+          <div style="margin-left:16px;">
+            <div class="type-label" style="margin-bottom:8px;">Avatar Group</div>
+            <div class="avatar-group">
+              <div class="avatar avatar-md" style="background:var(--accent-dim);color:var(--accent);">AK</div>
+              <div class="avatar avatar-md" style="background:var(--blue-dim);color:var(--blue);">MR</div>
+              <div class="avatar avatar-md" style="background:var(--green-dim);color:var(--green);">SL</div>
+              <div class="avatar avatar-md" style="background:var(--bg-5);color:var(--text-secondary);font-size:11px;">+4</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── OVERLAYS ─── -->
+    <div id="overlays" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Overlays</div>
+        <div class="section-desc">Modals and dialogs for focused user interactions.</div>
+      </div>
+
+      <div class="demo-block" data-label="Modal">
+        <div class="modal-backdrop">
+          <div class="modal">
+            <div class="modal-header">
+              <div>
+                <div class="card-title">Delete component</div>
+                <div class="card-desc">This action cannot be undone.</div>
+              </div>
+              <button class="btn btn-ghost btn-icon" style="padding:4px">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">Are you sure you want to delete <strong style="color:var(--text-primary)">Button.tsx</strong>? All instances of this component across your project will be removed.</p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-ghost btn-sm">Cancel</button>
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── FEEDBACK ─── -->
+    <div id="feedback" class="section">
+      <div class="section-header">
+        <div class="section-tag">Components</div>
+        <div class="section-title">Feedback</div>
+        <div class="section-desc">Skeleton loaders for optimistic UI patterns.</div>
+      </div>
+
+      <div class="demo-block" data-label="Skeleton">
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="height:140px;" class="skeleton" style="border-radius:0;"></div>
+          <div style="padding:20px;">
+            <div class="skeleton skeleton-h1" style="width:60%;"></div>
+            <div class="skeleton skeleton-text" style="width:100%;"></div>
+            <div class="skeleton skeleton-text" style="width:85%;"></div>
+            <div class="skeleton skeleton-text" style="width:70%;margin-bottom:16px;"></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="skeleton skeleton-circle" style="width:32px;height:32px;flex-shrink:0;"></div>
+              <div style="flex:1;">
+                <div class="skeleton skeleton-text" style="width:40%;margin-bottom:4px;"></div>
+                <div class="skeleton" style="height:11px;width:60%;border-radius:3px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PRICING ─── -->
+    <div id="pricing" class="section">
+      <div class="section-header">
+        <div class="section-tag">Patterns</div>
+        <div class="section-title">Pricing Cards</div>
+        <div class="section-desc">Tiered pricing layout with a featured plan highlight.</div>
+      </div>
+
+      <div class="demo-block" data-label="Pricing">
+        <div class="grid-3">
+          <div class="pricing-card">
+            <div class="type-label" style="margin-bottom:12px;">Free</div>
+            <div class="pricing-amount"><span>$</span>0</div>
+            <div class="pricing-period">per month</div>
+            <div class="pricing-features">
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                3 projects
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Community templates
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Basic analytics
+              </div>
+            </div>
+            <button class="btn btn-secondary" style="width:100%;">Get started free</button>
+          </div>
+
+          <div class="pricing-card featured">
+            <div class="type-label" style="margin-bottom:12px;color:var(--accent);">Pro</div>
+            <div class="pricing-amount"><span>$</span>20</div>
+            <div class="pricing-period">per month</div>
+            <div class="pricing-features">
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Unlimited projects
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Custom domain
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                CMS collections
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Priority support
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;">Upgrade to Pro</button>
+          </div>
+
+          <div class="pricing-card">
+            <div class="type-label" style="margin-bottom:12px;">Enterprise</div>
+            <div class="pricing-amount" style="font-size:28px;letter-spacing:-0.03em;line-height:1.1;">Custom</div>
+            <div class="pricing-period">contact us for pricing</div>
+            <div class="pricing-features">
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                SSO & SAML
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                SLA guarantee
+              </div>
+              <div class="pricing-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Dedicated support
+              </div>
+            </div>
+            <button class="btn btn-secondary" style="width:100%;">Contact sales</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CODE ─── -->
+    <div id="code" class="section">
+      <div class="section-header">
+        <div class="section-tag">Patterns</div>
+        <div class="section-title">Code Block</div>
+        <div class="section-desc">Syntax-highlighted code display with language badge.</div>
+      </div>
+
+      <div class="demo-block" data-label="Code">
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dots">
+              <div class="code-dot" style="background:#ff5f57"></div>
+              <div class="code-dot" style="background:#febc2e"></div>
+              <div class="code-dot" style="background:#28c840"></div>
+            </div>
+            <span class="code-lang">tokens.ts</span>
+            <button class="btn btn-ghost btn-sm" onclick="this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)" style="font-size:11px;padding:4px 8px;">Copy</button>
+          </div>
+          <pre><span class="code-kw">const</span> <span class="code-fn">tokens</span> = {
+  colors: {
+    accent:  <span class="code-str">"#7c68fe"</span>,
+    bg:      <span class="code-str">"#0a0a0b"</span>,
+    text:    <span class="code-str">"#f0f0f2"</span>,
+  },
+  radius: {
+    sm:   <span class="code-str">"6px"</span>,
+    md:   <span class="code-str">"10px"</span>,
+    lg:   <span class="code-str">"14px"</span>,
+    full: <span class="code-str">"9999px"</span>,
+  },
+  <span class="code-cmt">// Motion presets</span>
+  motion: {
+    fast:   <span class="code-str">"180ms cubic-bezier(0.4, 0, 0.2, 1)"</span>,
+    medium: <span class="code-str">"300ms cubic-bezier(0.4, 0, 0.2, 1)"</span>,
+  }
+};</pre>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function switchTab(el, id) {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const content = {
+      all: 'Showing all 128 items in the design system library.',
+      components: 'Showing 64 components — buttons, cards, inputs, and more.',
+      tokens: 'Showing 32 design tokens — colors, spacing, and typography.',
+      templates: 'Showing 12 page templates ready to customize.'
+    };
+    document.getElementById('tab-content').textContent = content[id];
+  }
+
+  // Active sidebar on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const links = document.querySelectorAll('.sidebar-item');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-item[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

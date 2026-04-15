@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velox — Build sites at the speed of thought</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET & TOKENS ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0b;
+  --bg-2: #111113;
+  --bg-3: #18181c;
+  --bg-4: #1f1f24;
+  --bg-5: #26262d;
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --text-primary: #f0f0f2;
+  --text-secondary: #9a9aa6;
+  --text-tertiary: #5a5a68;
+  --accent: #7c68fe;
+  --accent-dim: rgba(124,104,254,0.15);
+  --accent-glow: rgba(124,104,254,0.28);
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.12);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251,191,36,0.12);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg: 0 16px 56px rgba(0,0,0,0.75);
+  --transition: 180ms cubic-bezier(0.4,0,0.2,1);
+  --transition-slow: 360ms cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-5); border-radius: 3px; }
+
+/* ─── NOISE GRAIN ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ─── SHARED ─── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+section { position: relative; }
+
+.badge-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,104,254,0.28);
+  border-radius: var(--radius-full);
+  padding: 5px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+.badge-pill .pulse {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  position: relative;
+}
+.badge-pill .pulse::before {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.3;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:0.3} 50%{transform:scale(1.6);opacity:0} }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-family: var(--font);
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-primary:hover {
+  background: #8f7ffe;
+  box-shadow: 0 0 28px var(--accent-glow);
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+.btn-secondary:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.22); }
+.btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.btn-lg { padding: 13px 26px; font-size: 15.5px; border-radius: var(--radius-lg); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes shimmer {
+  from { background-position: -600px 0; }
+  to   { background-position: 600px 0; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.anim-fade-up    { animation: fadeUp 0.7s cubic-bezier(0.4,0,0.2,1) both; }
+.anim-delay-1    { animation-delay: 0.1s; }
+.anim-delay-2    { animation-delay: 0.2s; }
+.anim-delay-3    { animation-delay: 0.3s; }
+.anim-delay-4    { animation-delay: 0.4s; }
+.anim-delay-5    { animation-delay: 0.55s; }
+
+/* ─────────────────────────────────────────────────────
+   1. NAVBAR
+──────────────────────────────────────────────────────*/
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 0 32px;
+  height: 60px;
+  display: flex; align-items: center;
+  transition: all 0.3s ease;
+}
+.nav.scrolled {
+  background: rgba(10,10,11,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  width: 100%;
+  display: flex; align-items: center; gap: 0;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 9px;
+  text-decoration: none;
+  margin-right: 40px;
+}
+.nav-logo-mark {
+  width: 30px; height: 30px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark svg { width: 17px; height: 17px; }
+.nav-logo-text { font-size: 16px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.03em; }
+.nav-links {
+  display: flex; align-items: center; gap: 2px;
+  flex: 1;
+}
+.nav-link {
+  padding: 7px 14px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  font-weight: 400;
+}
+.nav-link:hover { color: var(--text-primary); background: var(--surface); }
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.nav-cta {
+  padding: 7px 16px;
+  background: var(--accent);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--transition);
+  letter-spacing: -0.01em;
+}
+.nav-cta:hover { background: #8f7ffe; box-shadow: 0 0 20px var(--accent-glow); }
+
+/* ─────────────────────────────────────────────────────
+   2. HERO
+──────────────────────────────────────────────────────*/
+.hero {
+  padding: 160px 0 100px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Radial glow background */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-glow-1 {
+  position: absolute;
+  width: 700px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(124,104,254,0.14) 0%, transparent 70%);
+  top: -200px; left: 50%; transform: translateX(-50%);
+}
+.hero-glow-2 {
+  position: absolute;
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse at center, rgba(96,165,250,0.07) 0%, transparent 70%);
+  top: 100px; right: -100px;
+}
+.hero-glow-3 {
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse at center, rgba(52,211,153,0.05) 0%, transparent 70%);
+  top: 200px; left: -100px;
+}
+
+/* Grid lines */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 100%);
+  opacity: 0.4;
+}
+
+.hero-eyebrow {
+  margin-bottom: 28px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-title {
+  font-size: clamp(44px, 6.5vw, 72px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease both 0.1s;
+}
+.hero-title-gradient {
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.55) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-title-accent {
+  background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 50%, var(--blue) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite, fadeUp 0.6s ease both 0.1s;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  max-width: 500px;
+  margin: 0 auto 36px;
+  font-weight: 300;
+  animation: fadeUp 0.6s ease both 0.2s;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 12px;
+  justify-content: center;
+  margin-bottom: 56px;
+  animation: fadeUp 0.6s ease both 0.3s;
+}
+
+.hero-social {
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  animation: fadeUp 0.6s ease both 0.4s;
+}
+.hero-social-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.hero-social-item strong { color: var(--text-secondary); font-weight: 500; }
+.hero-social-divider { width: 1px; height: 16px; background: var(--border-strong); }
+
+/* Browser mockup */
+.hero-mockup-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeUp 0.8s cubic-bezier(0.4,0,0.2,1) both 0.5s;
+}
+.hero-mockup {
+  background: var(--bg-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 32px 80px rgba(0,0,0,0.8),
+    0 0 120px rgba(124,104,254,0.08);
+  animation: float 6s ease-in-out infinite;
+}
+.mockup-bar {
+  height: 44px;
+  background: var(--bg-4);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+}
+.mockup-dots { display: flex; gap: 6px; }
+.mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mockup-url {
+  flex: 1;
+  height: 26px;
+  background: var(--bg-5);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+.mockup-url-text { font-size: 12px; color: var(--text-tertiary); font-family: var(--mono); }
+.mockup-canvas {
+  height: 420px;
+  background: var(--bg-3);
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  overflow: hidden;
+}
+.mockup-sidebar {
+  background: var(--bg-4);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.mockup-sidebar-item {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--text-tertiary);
+}
+.mockup-sidebar-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+.mockup-sidebar-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink:0; }
+.mockup-content { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.mockup-hero-block {
+  background: linear-gradient(135deg, rgba(124,104,254,0.12) 0%, rgba(96,165,250,0.06) 100%);
+  border: 1px solid rgba(124,104,254,0.2);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+}
+.mockup-skel {
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--bg-4) 25%, var(--bg-5) 50%, var(--bg-4) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 2s infinite;
+}
+.mockup-skel-h { height: 16px; border-radius: 4px; background: linear-gradient(90deg, var(--bg-5) 25%, var(--bg-3) 50%, var(--bg-5) 75%); background-size: 600px 100%; animation: shimmer 2s infinite; margin-bottom: 10px; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.mockup-card {
+  background: var(--bg-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.mockup-btn {
+  display: inline-block;
+  background: var(--accent);
+  border-radius: 6px;
+  height: 26px;
+  width: 90px;
+  margin: 10px auto 0;
+}
+.mockup-toolbar {
+  position: absolute;
+  bottom: 16px; right: 16px;
+  display: flex; gap: 6px;
+}
+.mockup-tool-btn {
+  width: 32px; height: 32px;
+  background: var(--bg-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+.mockup-tool-btn svg { width: 14px; height: 14px; color: var(--text-secondary); }
+
+/* ─────────────────────────────────────────────────────
+   3. FEATURES / BENTO
+──────────────────────────────────────────────────────*/
+.features {
+  padding: 96px 0;
+}
+.section-eyebrow {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: var(--mono);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  margin-bottom: 14px;
+}
+.section-desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-weight: 300;
+  max-width: 480px;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 14px;
+  margin-top: 56px;
+}
+.bento-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.25s ease;
+}
+.bento-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.bento-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at top left, rgba(124,104,254,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.bento-card:hover::before { opacity: 1; }
+
+.bento-1 { grid-column: span 7; }
+.bento-2 { grid-column: span 5; }
+.bento-3 { grid-column: span 5; }
+.bento-4 { grid-column: span 7; }
+
+.bento-icon {
+  width: 42px; height: 42px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,104,254,0.22);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+}
+.bento-icon svg { width: 20px; height: 20px; color: var(--accent); }
+
+.bento-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--green-dim);
+  border: 1px solid rgba(52,211,153,0.2);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+.bento-title { font-size: 18px; font-weight: 600; letter-spacing: -0.025em; margin-bottom: 8px; }
+.bento-desc { font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; }
+
+/* Inline visual for large card */
+.bento-visual {
+  margin-top: 22px;
+  background: var(--bg-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.prompt-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.prompt-icon { color: var(--accent); display:flex; }
+.prompt-icon svg { width:15px;height:15px; }
+.prompt-text { font-size: 13px; font-family: var(--mono); color: var(--text-secondary); flex: 1; }
+.prompt-cursor {
+  width: 2px; height: 14px;
+  background: var(--accent);
+  border-radius: 1px;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.ai-output {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+.ai-kw { color: var(--accent); }
+.ai-str { color: var(--green); }
+.ai-prop { color: var(--blue); }
+
+/* Speed visual */
+.speed-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.speed-row { display: flex; align-items: center; gap: 10px; }
+.speed-label { font-size: 12px; color: var(--text-tertiary); width: 64px; text-align: right; font-family: var(--mono); flex-shrink:0; }
+.speed-track { flex: 1; height: 8px; background: var(--bg-5); border-radius: var(--radius-full); overflow: hidden; }
+.speed-fill { height: 100%; border-radius: var(--radius-full); }
+.speed-val { font-size: 12px; font-family: var(--mono); color: var(--text-primary); font-weight: 500; width: 40px; }
+
+/* Collab avatars */
+.collab-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.collab-row { display: flex; align-items: center; gap: 10px; }
+.collab-avatars { display: flex; }
+.collab-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600;
+  margin-left: -6px;
+}
+.collab-avatars .collab-avatar:first-child { margin-left: 0; }
+.collab-text { font-size: 12.5px; color: var(--text-secondary); }
+.collab-time { font-size: 11px; color: var(--text-tertiary); font-family: var(--mono); margin-left:auto; }
+.collab-divider { height: 1px; background: var(--border); }
+
+/* ─────────────────────────────────────────────────────
+   4. SOCIAL PROOF / METRICS
+──────────────────────────────────────────────────────*/
+.metrics {
+  padding: 80px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.metric-item {
+  background: var(--bg-2);
+  padding: 40px 32px;
+  text-align: center;
+  transition: background var(--transition);
+}
+.metric-item:hover { background: var(--bg-3); }
+.metric-number {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.metric-number.accent {
+  background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.metric-label { font-size: 13.5px; color: var(--text-tertiary); font-weight: 400; }
+
+/* Testimonials */
+.testimonials {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.testimonial {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 26px 24px;
+  transition: all var(--transition);
+}
+.testimonial:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.testimonial-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+.testimonial-stars svg { width: 13px; height: 13px; color: var(--amber); fill: var(--amber); }
+.testimonial-text { font-size: 14px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 18px; font-style: italic; }
+.testimonial-text em { font-style: normal; color: var(--text-primary); }
+.testimonial-author { display: flex; align-items: center; gap: 10px; }
+.testimonial-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+.testimonial-name { font-size: 13.5px; font-weight: 600; }
+.testimonial-role { font-size: 12px; color: var(--text-tertiary); }
+
+/* Logo bar */
+.logos {
+  margin-top: 80px;
+  text-align: center;
+}
+.logos-label { font-size: 13px; color: var(--text-tertiary); margin-bottom: 28px; }
+.logos-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 48px; flex-wrap: wrap;
+}
+.logo-item {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: -0.02em;
+  transition: color var(--transition);
+  cursor: default;
+}
+.logo-item:hover { color: var(--text-secondary); }
+
+/* ─────────────────────────────────────────────────────
+   5. PRICING
+──────────────────────────────────────────────────────*/
+.pricing {
+  padding: 96px 0;
+}
+.pricing-header { text-align: center; margin-bottom: 56px; }
+.pricing-toggle {
+  display: inline-flex;
+  background: var(--bg-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  gap: 4px;
+  margin-top: 24px;
+}
+.pricing-toggle-btn {
+  padding: 7px 20px;
+  border-radius: var(--radius-full);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border: none; background: transparent;
+  font-family: var(--font);
+  transition: all var(--transition);
+}
+.pricing-toggle-btn.active { background: var(--bg-2); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+.save-badge {
+  display: inline-flex; align-items: center;
+  background: var(--green-dim);
+  border: 1px solid rgba(52,211,153,0.2);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  font-size: 10.5px;
+  color: var(--green);
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.03em;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.pricing-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 30px 28px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition);
+}
+.pricing-card:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+.pricing-card.featured {
+  border-color: rgba(124,104,254,0.45);
+  background: linear-gradient(160deg, rgba(124,104,254,0.1) 0%, var(--bg-3) 50%);
+}
+.pricing-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+}
+.pricing-popular {
+  position: absolute;
+  top: -1px; right: 28px;
+  background: var(--accent);
+  color: white;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px 4px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.pricing-tier { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 16px; font-family: var(--mono); }
+.pricing-tier.accent { color: var(--accent); }
+.pricing-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.pricing-currency { font-size: 18px; font-weight: 600; color: var(--text-secondary); }
+.pricing-amount { font-size: 48px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; }
+.pricing-period { font-size: 13px; color: var(--text-tertiary); margin-bottom: 24px; }
+.pricing-divider { height: 1px; background: var(--border); margin: 22px 0; }
+.pricing-features { display: flex; flex-direction: column; gap: 11px; margin-bottom: 26px; }
+.pricing-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; }
+.pricing-feature svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+.pricing-feature.check svg { color: var(--green); }
+.pricing-feature.cross svg { color: var(--text-tertiary); }
+.pricing-feature.cross { color: var(--text-tertiary); }
+.pricing-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: var(--radius-md);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.pricing-btn:hover { background: var(--surface-hover); }
+.pricing-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+.pricing-btn.primary:hover { background: #8f7ffe; box-shadow: 0 0 20px var(--accent-glow); }
+
+/* ─────────────────────────────────────────────────────
+   6. CTA
+──────────────────────────────────────────────────────*/
+.cta-section {
+  padding: 80px 0 120px;
+}
+.cta-inner {
+  background: var(--bg-3);
+  border: 1px solid var(--border-strong);
+  border-radius: 28px;
+  padding: 72px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-glow {
+  position: absolute;
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse at center, rgba(124,104,254,0.18) 0%, transparent 70%);
+  top: -160px; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+.cta-glow-2 {
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(ellipse at center, rgba(52,211,153,0.08) 0%, transparent 70%);
+  bottom: -100px; right: -50px;
+  pointer-events: none;
+}
+.cta-grid-overlay {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  border-radius: 28px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+}
+.cta-title {
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+.cta-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 420px;
+  margin: 0 auto 36px;
+  font-weight: 300;
+  position: relative; z-index: 1;
+}
+.cta-actions {
+  display: flex; align-items: center; gap: 12px; justify-content: center;
+  position: relative; z-index: 1;
+}
+.cta-note {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  position: relative; z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────
+   FOOTER
+──────────────────────────────────────────────────────*/
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 0 40px;
+}
+.footer-inner {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+.footer-brand {}
+.footer-brand-name { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; display:flex;align-items:center;gap:8px; }
+.footer-brand-mark {
+  width: 22px; height: 22px;
+  background: var(--accent);
+  border-radius: 5px;
+  display: inline-block;
+}
+.footer-brand-desc { font-size: 13px; color: var(--text-tertiary); line-height: 1.7; }
+.footer-col-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 16px; font-family: var(--mono); }
+.footer-link {
+  display: block;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: color var(--transition);
+}
+.footer-link:hover { color: var(--text-primary); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-copy { font-size: 13px; color: var(--text-tertiary); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--text-tertiary); text-decoration: none; transition: color var(--transition); }
+.footer-links a:hover { color: var(--text-secondary); }
+
+/* ─── INTERSECTION OBSERVER ANIMATIONS ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+<nav class="nav" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <span class="nav-logo-text">Velox</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#metrics">Customers</a>
+      <a class="nav-link" href="#pricing">Pricing</a>
+      <a class="nav-link" href="#">Docs</a>
+      <a class="nav-link" href="#">Blog</a>
+    </div>
+    <div class="nav-actions">
+      <a class="nav-link" href="#">Log in</a>
+      <a class="nav-cta" href="#">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="hero-glow-3"></div>
+  </div>
+  <div class="container">
+
+    <div class="hero-eyebrow">
+      <span class="badge-pill">
+        <span class="pulse"></span>
+        Now with AI-powered layout engine
+      </span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="hero-title-gradient">Build sites at the<br>speed of </span><span class="hero-title-accent">thought.</span>
+    </h1>
+
+    <p class="hero-sub">Velox combines a pixel-perfect visual editor with an AI layout engine — so you can go from blank canvas to live site in minutes.</p>
+
+    <div class="hero-actions">
+      <a href="#" class="btn btn-primary btn-lg">
+        Start building free
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="btn btn-secondary btn-lg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        Watch demo
+      </a>
+    </div>
+
+    <div class="hero-social">
+      <div class="hero-social-item">
+        <strong>50,000+</strong> sites built
+      </div>
+      <div class="hero-social-divider"></div>
+      <div class="hero-social-item">
+        <strong>4.9</strong>&nbsp;★ average rating
+      </div>
+      <div class="hero-social-divider"></div>
+      <div class="hero-social-item">
+        No credit card required
+      </div>
+    </div>
+
+    <!-- Browser Mockup -->
+    <div class="hero-mockup-wrap" style="margin-top:52px;">
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dots">
+            <div class="mockup-dot" style="background:#ff5f57"></div>
+            <div class="mockup-dot" style="background:#febc2e"></div>
+            <div class="mockup-dot" style="background:#28c840"></div>
+          </div>
+          <div class="mockup-url">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5a5a68" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <span class="mockup-url-text">velox.app/editor/project-alpha</span>
+          </div>
+        </div>
+        <div class="mockup-canvas" style="position:relative;">
+          <!-- Sidebar -->
+          <div class="mockup-sidebar">
+            <div style="font-size:10px;color:var(--text-tertiary);letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px 8px;font-family:var(--mono);">Layers</div>
+            <div class="mockup-sidebar-item active"><span class="mockup-sidebar-dot"></span>Hero Section</div>
+            <div class="mockup-sidebar-item" style="padding-left:22px;"><span class="mockup-sidebar-dot"></span>Headline</div>
+            <div class="mockup-sidebar-item" style="padding-left:22px;"><span class="mockup-sidebar-dot"></span>Subtext</div>
+            <div class="mockup-sidebar-item" style="padding-left:22px;"><span class="mockup-sidebar-dot"></span>CTA Button</div>
+            <div class="mockup-sidebar-item"><span class="mockup-sidebar-dot"></span>Features Grid</div>
+            <div class="mockup-sidebar-item"><span class="mockup-sidebar-dot"></span>Testimonials</div>
+            <div class="mockup-sidebar-item"><span class="mockup-sidebar-dot"></span>Pricing</div>
+            <div class="mockup-sidebar-item"><span class="mockup-sidebar-dot"></span>Footer</div>
+          </div>
+          <!-- Canvas -->
+          <div class="mockup-content">
+            <div class="mockup-hero-block">
+              <div class="mockup-skel-h" style="width:65%;margin:0 auto 10px;height:20px;border-radius:6px;background:rgba(124,104,254,0.25);"></div>
+              <div class="mockup-skel" style="width:80%;margin:0 auto 8px;"></div>
+              <div class="mockup-skel" style="width:60%;margin:0 auto 16px;"></div>
+              <div class="mockup-btn"></div>
+            </div>
+            <div class="mockup-grid">
+              <div class="mockup-card">
+                <div style="width:20px;height:20px;background:var(--accent-dim);border-radius:4px;margin-bottom:8px;"></div>
+                <div class="mockup-skel" style="width:70%;margin-bottom:6px;"></div>
+                <div class="mockup-skel" style="width:100%;margin-bottom:4px;"></div>
+                <div class="mockup-skel" style="width:85%;"></div>
+              </div>
+              <div class="mockup-card">
+                <div style="width:20px;height:20px;background:var(--blue-dim);border-radius:4px;margin-bottom:8px;"></div>
+                <div class="mockup-skel" style="width:60%;margin-bottom:6px;"></div>
+                <div class="mockup-skel" style="width:100%;margin-bottom:4px;"></div>
+                <div class="mockup-skel" style="width:90%;"></div>
+              </div>
+              <div class="mockup-card">
+                <div style="width:20px;height:20px;background:var(--green-dim);border-radius:4px;margin-bottom:8px;"></div>
+                <div class="mockup-skel" style="width:75%;margin-bottom:6px;"></div>
+                <div class="mockup-skel" style="width:100%;margin-bottom:4px;"></div>
+                <div class="mockup-skel" style="width:80%;"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Floating toolbar -->
+          <div class="mockup-toolbar">
+            <div class="mockup-tool-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="mockup-tool-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FEATURES ═══════════════════════════════ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">Features</div>
+      <div class="section-title">Everything you need<br>to ship faster</div>
+      <div class="section-desc">Velox gives you a visual editor, AI layout engine, and real-time collaboration — all in one tool. No hand-off. No context-switch.</div>
+    </div>
+
+    <div class="bento">
+
+      <!-- Card 1: AI Layout — large left -->
+      <div class="bento-card bento-1 reveal reveal-delay-1">
+        <div class="bento-tag">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          New
+        </div>
+        <div class="bento-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div class="bento-title">AI-powered layout engine</div>
+        <div class="bento-desc">Describe what you want in plain English. Velox generates pixel-perfect, production-ready layouts with correct spacing, hierarchy, and motion.</div>
+        <div class="bento-visual">
+          <div class="prompt-bar">
+            <span class="prompt-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83"/></svg></span>
+            <span class="prompt-text" id="ai-prompt">a dark hero section with gradient headline and CTA</span>
+            <span class="prompt-cursor"></span>
+          </div>
+          <div class="ai-output">
+<span class="ai-kw">export</span> <span class="ai-kw">function</span> <span class="ai-prop">Hero</span>() {<br>
+&nbsp;&nbsp;<span class="ai-kw">return</span> &lt;<span class="ai-prop">section</span> className=<span class="ai-str">"hero"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="ai-prop">h1</span>&gt;Build at the speed of <span class="ai-str">thought</span>&lt;/<span class="ai-prop">h1</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="ai-prop">Button</span> variant=<span class="ai-str">"primary"</span>&gt;Get started&lt;/&gt;<br>
+&nbsp;&nbsp;&lt;/<span class="ai-prop">section</span>&gt;<br>
+&nbsp;&nbsp;}
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Speed — small right -->
+      <div class="bento-card bento-2 reveal reveal-delay-2">
+        <div class="bento-icon" style="background:var(--amber-dim);border-color:rgba(251,191,36,0.22)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="bento-title">100ms interactions</div>
+        <div class="bento-desc">The editor renders every change in real time. Zero lag from input to visual feedback.</div>
+        <div class="speed-bars">
+          <div class="speed-row">
+            <span class="speed-label">Velox</span>
+            <div class="speed-track"><div class="speed-fill" style="width:92%;background:linear-gradient(90deg,var(--accent),var(--blue));"></div></div>
+            <span class="speed-val">98</span>
+          </div>
+          <div class="speed-row">
+            <span class="speed-label">Webflow</span>
+            <div class="speed-track"><div class="speed-fill" style="width:62%;background:var(--bg-5);"></div></div>
+            <span class="speed-val">65</span>
+          </div>
+          <div class="speed-row">
+            <span class="speed-label">WordPress</span>
+            <div class="speed-track"><div class="speed-fill" style="width:38%;background:var(--bg-5);"></div></div>
+            <span class="speed-val">41</span>
+          </div>
+          <div style="font-size:10.5px;color:var(--text-tertiary);font-family:var(--mono);text-align:right;margin-top:4px;">Lighthouse score (avg.)</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Collab — small left -->
+      <div class="bento-card bento-3 reveal reveal-delay-1">
+        <div class="bento-icon" style="background:var(--green-dim);border-color:rgba(52,211,153,0.22)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="bento-title">Real-time collaboration</div>
+        <div class="bento-desc">Invite your whole team. See cursors, edits, and comments live — no merge conflicts.</div>
+        <div class="collab-stack">
+          <div class="collab-row">
+            <div class="collab-avatars">
+              <div class="collab-avatar" style="background:var(--accent-dim);color:var(--accent)">AK</div>
+              <div class="collab-avatar" style="background:var(--blue-dim);color:var(--blue)">MR</div>
+            </div>
+            <span class="collab-text" style="font-size:12.5px;">Arya edited Hero Section</span>
+            <span class="collab-time">now</span>
+          </div>
+          <div class="collab-divider"></div>
+          <div class="collab-row">
+            <div class="collab-avatars">
+              <div class="collab-avatar" style="background:var(--green-dim);color:var(--green)">SL</div>
+            </div>
+            <span class="collab-text" style="font-size:12.5px;">Sara commented on Navbar</span>
+            <span class="collab-time">2m</span>
+          </div>
+          <div class="collab-divider"></div>
+          <div class="collab-row">
+            <div class="collab-avatars">
+              <div class="collab-avatar" style="background:var(--amber-dim);color:var(--amber)">JD</div>
+            </div>
+            <span class="collab-text" style="font-size:12.5px;">Jake published to production</span>
+            <span class="collab-time">5m</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Tokens — large right -->
+      <div class="bento-card bento-4 reveal reveal-delay-2">
+        <div class="bento-icon" style="background:var(--blue-dim);border-color:rgba(96,165,250,0.22)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="bento-title">Design token sync</div>
+        <div class="bento-desc">Your colors, spacing, and typography live as tokens. Change once, update everywhere — across every component, every breakpoint.</div>
+        <div class="bento-visual" style="margin-top:18px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;">
+              <div style="font-size:10px;color:var(--text-tertiary);font-family:var(--mono);margin-bottom:6px;">--accent</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:20px;height:20px;border-radius:4px;background:var(--accent);flex-shrink:0;"></div>
+                <span style="font-size:11.5px;font-family:var(--mono);color:var(--text-secondary)">#7c68fe</span>
+              </div>
+            </div>
+            <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;">
+              <div style="font-size:10px;color:var(--text-tertiary);font-family:var(--mono);margin-bottom:6px;">--radius-lg</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:20px;height:20px;border-radius:8px;background:var(--bg-5);border:1px solid var(--border-strong);flex-shrink:0;"></div>
+                <span style="font-size:11.5px;font-family:var(--mono);color:var(--text-secondary)">14px</span>
+              </div>
+            </div>
+            <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;">
+              <div style="font-size:10px;color:var(--text-tertiary);font-family:var(--mono);margin-bottom:6px;">--font</div>
+              <div style="font-size:11.5px;font-family:var(--mono);color:var(--text-secondary)">DM Sans</div>
+            </div>
+            <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;">
+              <div style="font-size:10px;color:var(--text-tertiary);font-family:var(--mono);margin-bottom:6px;">--transition</div>
+              <div style="font-size:11.5px;font-family:var(--mono);color:var(--text-secondary)">180ms ease</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ METRICS + TESTIMONIALS ═══════════════════════════════ -->
+<section class="metrics" id="metrics">
+  <div class="container">
+
+    <div class="metrics-grid reveal">
+      <div class="metric-item">
+        <div class="metric-number accent">50k+</div>
+        <div class="metric-label">Sites live today</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-number">98%</div>
+        <div class="metric-label">Avg. Lighthouse score</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-number">4.9★</div>
+        <div class="metric-label">User rating</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-number">6 min</div>
+        <div class="metric-label">Avg. first publish</div>
+      </div>
+    </div>
+
+    <div class="testimonials">
+      <div class="testimonial reveal reveal-delay-1">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testimonial-text">"I shipped our <em>entire marketing site</em> in a single afternoon. The AI layout suggestions are genuinely good — not just filler."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:var(--accent-dim);color:var(--accent)">AK</div>
+          <div>
+            <div class="testimonial-name">Arya Kim</div>
+            <div class="testimonial-role">Design Lead, Arc Labs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial reveal reveal-delay-2">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testimonial-text">"We replaced Webflow for every client project. The <em>Lighthouse scores</em> alone pay for the subscription — clients love seeing 98s."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:var(--blue-dim);color:var(--blue)">MR</div>
+          <div>
+            <div class="testimonial-name">Marco Ruiz</div>
+            <div class="testimonial-role">Founder, Studio Volta</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial reveal reveal-delay-3">
+        <div class="testimonial-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testimonial-text">"The <em>token sync</em> is a game-changer. Our brand refresh took 20 minutes — changed four variables and everything updated automatically."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:var(--green-dim);color:var(--green)">SL</div>
+          <div>
+            <div class="testimonial-name">Sara Lee</div>
+            <div class="testimonial-role">Head of Product, Luminary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="logos reveal">
+      <div class="logos-label">Trusted by teams at</div>
+      <div class="logos-row">
+        <span class="logo-item">Vercel</span>
+        <span class="logo-item">Linear</span>
+        <span class="logo-item">Raycast</span>
+        <span class="logo-item">Loom</span>
+        <span class="logo-item">Arc</span>
+        <span class="logo-item">Figma</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ PRICING ═══════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-eyebrow" style="text-align:center">Pricing</div>
+      <div class="section-title" style="text-align:center">Simple, honest pricing</div>
+      <p style="color:var(--text-secondary);font-size:16px;font-weight:300;margin-top:10px;">Start free. Scale when you're ready. No hidden fees, ever.</p>
+      <div class="pricing-toggle">
+        <button class="pricing-toggle-btn active" onclick="switchBilling('monthly', this)">Monthly</button>
+        <button class="pricing-toggle-btn" onclick="switchBilling('yearly', this)">Yearly<span class="save-badge">−25%</span></button>
+      </div>
+    </div>
+
+    <div class="pricing-grid reveal reveal-delay-1">
+
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-price">
+          <span class="pricing-currency">$</span>
+          <span class="pricing-amount" id="price-free">0</span>
+        </div>
+        <div class="pricing-period">forever free</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            3 projects
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Community templates
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Velox subdomain
+          </div>
+          <div class="pricing-feature cross">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            AI layout engine
+          </div>
+          <div class="pricing-feature cross">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            Custom domain
+          </div>
+        </div>
+        <button class="pricing-btn">Start free</button>
+      </div>
+
+      <!-- Pro (featured) -->
+      <div class="pricing-card featured">
+        <div class="pricing-popular">Popular</div>
+        <div class="pricing-tier accent">Pro</div>
+        <div class="pricing-price">
+          <span class="pricing-currency">$</span>
+          <span class="pricing-amount" id="price-pro">20</span>
+        </div>
+        <div class="pricing-period" id="period-pro">per month</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Unlimited projects
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            AI layout engine
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Custom domain + SSL
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            CMS collections
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Priority support
+          </div>
+        </div>
+        <button class="pricing-btn primary">Upgrade to Pro</button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-tier">Enterprise</div>
+        <div style="font-size:34px;font-weight:700;letter-spacing:-0.04em;line-height:1;margin-bottom:4px;">Custom</div>
+        <div class="pricing-period">contact us</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-features">
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Everything in Pro
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            SSO & SAML
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            SLA guarantee
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Dedicated support
+          </div>
+          <div class="pricing-feature check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Custom contract
+          </div>
+        </div>
+        <button class="pricing-btn">Contact sales</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA ═══════════════════════════════ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="cta-glow"></div>
+      <div class="cta-glow-2"></div>
+      <div class="cta-grid-overlay"></div>
+      <div class="cta-title">
+        <span style="background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,0.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Ready to ship</span><br>
+        <span style="background:linear-gradient(135deg,var(--accent) 0%,#a78bfa 60%,var(--blue) 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 4s ease infinite;">something beautiful?</span>
+      </div>
+      <p class="cta-desc">Join 50,000+ designers and developers who already build with Velox. Start free — no credit card needed.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-primary btn-lg">
+          Create your free site
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#" class="btn btn-secondary btn-lg">Talk to sales</a>
+      </div>
+      <p class="cta-note">Free plan available · No credit card · Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-name">
+          <span class="footer-brand-mark"></span>
+          Velox
+        </div>
+        <p class="footer-brand-desc">Build beautiful sites at the speed of thought. AI-powered, pixel-perfect, production-ready.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <a class="footer-link" href="#">Features</a>
+        <a class="footer-link" href="#">Pricing</a>
+        <a class="footer-link" href="#">Templates</a>
+        <a class="footer-link" href="#">Changelog</a>
+        <a class="footer-link" href="#">Roadmap</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <a class="footer-link" href="#">Documentation</a>
+        <a class="footer-link" href="#">API Reference</a>
+        <a class="footer-link" href="#">Blog</a>
+        <a class="footer-link" href="#">Tutorials</a>
+        <a class="footer-link" href="#">Community</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <a class="footer-link" href="#">About</a>
+        <a class="footer-link" href="#">Careers</a>
+        <a class="footer-link" href="#">Press</a>
+        <a class="footer-link" href="#">Contact</a>
+        <a class="footer-link" href="#">Status</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Velox Inc. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ─── Navbar scroll effect ─── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+/* ─── Intersection observer for reveal animations ─── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── Pricing toggle ─── */
+function switchBilling(mode, btn) {
+  document.querySelectorAll('.pricing-toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const yearly = mode === 'yearly';
+  document.getElementById('price-pro').textContent = yearly ? '15' : '20';
+  document.getElementById('period-pro').textContent = yearly ? 'per month, billed yearly' : 'per month';
+}
+
+/* ─── Animated AI prompt typewriter ─── */
+const prompts = [
+  'a dark hero section with gradient headline and CTA',
+  'a 3-column feature grid with icons and descriptions',
+  'a pricing table with monthly/yearly toggle',
+  'a testimonial carousel with star ratings',
+];
+let pi = 0, ci = 0, deleting = false;
+const promptEl = document.getElementById('ai-prompt');
+function typePrompt() {
+  const target = prompts[pi];
+  if (!deleting) {
+    promptEl.textContent = target.slice(0, ci++);
+    if (ci > target.length) { deleting = true; setTimeout(typePrompt, 1800); return; }
+  } else {
+    promptEl.textContent = target.slice(0, ci--);
+    if (ci < 0) { deleting = false; pi = (pi + 1) % prompts.length; ci = 0; }
+  }
+  setTimeout(typePrompt, deleting ? 28 : 52);
+}
+typePrompt();
+</script>
+</body>
+</html>
