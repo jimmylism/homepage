@@ -10,10 +10,10 @@ export default function Header() {
                 <h2>Jimmy Huang</h2>
             </div>
             <div className="headerList">
-                <a className="headerLink" href="#about">About</a>
-                <a className="headerLink" href="#experience">Experience</a>
                 <a className="headerLink" href="#companies">Portfolio</a>
+                <a className="headerLink" href="#experience">Experience</a>
                 <a className="headerLink" href="#consulting">Work with me</a>
+                <a className="headerLink" href="#about">About</a>
                 <a className="headerLink" href="#contact">Contact</a>
             </div>
         </div>
