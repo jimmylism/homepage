@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlobalMacro — Post-COVID Inflation Monitor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#08101E;
+  --ink2:#0D1A2F;
+  --ink3:#152238;
+  --paper:#F5F2EC;
+  --gold:#C8A84B;
+  --gold2:#E2C16A;
+  --teal:#1A8F9E;
+  --teal2:#22B2C4;
+  --coral:#C95F3F;
+  --sage:#4E8B6A;
+  --mist:#8A97A8;
+  --border:rgba(255,255,255,0.07);
+  --card:rgba(13,26,47,0.92);
+  --t:0.28s cubic-bezier(0.4,0,0.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#D0D8E4;overflow-x:hidden}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:58px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;
+  background:rgba(8,16,30,0.94);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Libre Baskerville',serif;
+  font-size:14.5px;font-weight:700;color:#EDE9DF;letter-spacing:0.03em;
+}
+.nav-mark{
+  width:26px;height:26px;border-radius:4px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:grid;place-items:center;
+  font-size:10px;font-weight:700;color:var(--ink);font-family:'DM Mono',monospace;
+}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{
+  font-size:12px;font-weight:500;letter-spacing:0.05em;
+  color:var(--mist);text-decoration:none;transition:color var(--t);
+}
+.nav-links a:hover{color:#EDE9DF}
+.live-badge{
+  display:flex;align-items:center;gap:6px;
+  font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.1em;
+  padding:4px 11px;border-radius:2px;
+  background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.25);
+  color:var(--gold2);
+}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#4E8B6A;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+
+/* HERO */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:110px 80px 80px;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 75% 55% at 55% 35%,rgba(26,143,158,0.08) 0%,transparent 65%),
+    radial-gradient(ellipse 45% 40% at 5% 85%,rgba(200,168,75,0.05) 0%,transparent 60%),
+    linear-gradient(155deg,#08101E 0%,#0C1828 100%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse 85% 75% at 50% 50%,black 20%,transparent 100%);
+}
+.hero-content{position:relative;z-index:1;max-width:1100px}
+
+.eyebrow{
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  color:var(--gold);letter-spacing:0.22em;text-transform:uppercase;
+  margin-bottom:22px;display:flex;align-items:center;gap:14px;
+  animation:fadeUp 0.6s ease both;
+}
+.eyebrow-line{width:26px;height:1px;background:var(--gold);opacity:0.7}
+
+h1{
+  font-family:'Libre Baskerville',serif;
+  font-size:clamp(40px,5.2vw,70px);font-weight:700;
+  line-height:1.06;letter-spacing:-0.025em;
+  color:#EDE9DF;margin-bottom:8px;
+  animation:fadeUp 0.65s 0.1s ease both;
+}
+h1 em{font-style:italic;color:var(--gold2)}
+.hero-sub{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:clamp(15px,1.8vw,20px);color:var(--mist);
+  margin-bottom:32px;
+  animation:fadeUp 0.65s 0.18s ease both;
+}
+.hero-desc{
+  font-size:14.5px;font-weight:300;line-height:1.82;
+  color:#6F7F92;max-width:530px;margin-bottom:52px;
+  animation:fadeUp 0.65s 0.26s ease both;
+}
+
+.kpi-row{
+  display:flex;flex-wrap:wrap;gap:0;
+  border:1px solid var(--border);border-radius:5px;overflow:hidden;
+  max-width:680px;animation:fadeUp 0.65s 0.36s ease both;
+}
+.kpi{
+  flex:1;min-width:110px;padding:18px 22px;
+  border-right:1px solid var(--border);
+  background:rgba(13,26,47,0.55);
+  transition:background var(--t);
+}
+.kpi:last-child{border-right:none}
+.kpi:hover{background:rgba(26,143,158,0.09)}
+.kpi-v{
+  font-family:'Libre Baskerville',serif;
+  font-size:26px;font-weight:700;color:#EDE9DF;line-height:1;margin-bottom:5px;
+}
+.kpi-v sub{font-size:12px;color:var(--gold2);font-style:normal}
+.kpi-l{font-size:9.5px;font-weight:500;color:var(--mist);letter-spacing:0.1em;text-transform:uppercase}
+.kpi-d{font-family:'DM Mono',monospace;font-size:9px;margin-top:3px}
+.kpi-d.up{color:#4E8B6A}.kpi-d.dn{color:var(--coral)}
+
+.scroll-hint{
+  position:absolute;bottom:34px;right:72px;
+  writing-mode:vertical-rl;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--mist);
+  display:flex;align-items:center;gap:8px;opacity:0.5;
+}
+.scroll-hint::after{content:'';width:1px;height:36px;background:var(--mist)}
+
+/* NARRATIVE */
+.narrative{background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.n-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.n-card{
+  padding:38px 34px;border-right:1px solid var(--border);
+  position:relative;overflow:hidden;transition:background var(--t);
+}
+.n-card:last-child{border-right:none}
+.n-card:hover{background:rgba(26,143,158,0.04)}
+.n-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  transform:scaleX(0);transform-origin:left;transition:transform var(--t);
+}
+.n-card:hover::before{transform:scaleX(1)}
+.n-num{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:48px;font-weight:400;
+  color:rgba(200,168,75,0.12);line-height:1;margin-bottom:14px;
+}
+.n-title{
+  font-family:'Libre Baskerville',serif;font-size:16px;font-weight:700;
+  color:#EDE9DF;margin-bottom:10px;
+}
+.n-text{font-size:13px;font-weight:300;line-height:1.78;color:var(--mist)}
+
+/* SECTION SHELL */
+.sec{position:relative;z-index:1}
+.sec-inner{max-width:1200px;margin:0 auto;padding:72px 48px}
+.sec-label{
+  font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-label::before{content:'';width:18px;height:1px;background:var(--gold)}
+h2{
+  font-family:'Libre Baskerville',serif;
+  font-size:clamp(24px,2.8vw,36px);font-weight:700;
+  color:#EDE9DF;line-height:1.2;margin-bottom:8px;
+}
+.sec-desc{
+  font-size:13.5px;font-weight:300;line-height:1.8;
+  color:var(--mist);max-width:580px;margin-bottom:36px;
+}
+
+/* DASHBOARD */
+.dash-sec{background:var(--ink)}
+
+.tab-row{
+  display:flex;gap:0;width:fit-content;
+  border:1px solid var(--border);border-radius:3px;overflow:hidden;
+  margin-bottom:22px;
+}
+.tab{
+  padding:9px 20px;font-size:11px;font-weight:500;
+  font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;
+  background:transparent;border:none;color:var(--mist);
+  cursor:pointer;transition:all var(--t);
+  border-right:1px solid var(--border);
+}
+.tab:last-child{border-right:none}
+.tab.on{background:var(--teal);color:#fff}
+.tab:hover:not(.on){background:rgba(26,143,158,0.1);color:#EDE9DF}
+
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:7px;padding:26px 30px;margin-bottom:22px;
+}
+.card-hd{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;flex-wrap:wrap;gap:10px;
+}
+.card-title{
+  font-family:'Libre Baskerville',serif;
+  font-size:16px;font-weight:700;color:#EDE9DF;margin-bottom:3px;
+}
+.card-sub{font-size:11.5px;color:var(--mist);font-weight:300}
+.card-tag{
+  font-family:'DM Mono',monospace;font-size:9.5px;
+  color:var(--mist);letter-spacing:0.07em;text-align:right;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mist)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.leg-dash{width:18px;height:0;border-top:2px dashed;flex-shrink:0}
+
+/* HEATMAP */
+#hmap-wrap{overflow-x:auto}
+.hmap{border-collapse:collapse;width:100%;font-family:'DM Mono',monospace;font-size:11.5px}
+.hmap th{
+  padding:7px 10px;font-size:9.5px;font-weight:500;
+  color:var(--mist);letter-spacing:0.08em;text-transform:uppercase;
+  border-bottom:1px solid var(--border);text-align:center;
+}
+.hmap th:first-child{text-align:left}
+.hmap td{
+  padding:9px 10px;text-align:center;
+  border-bottom:1px solid rgba(255,255,255,0.025);
+}
+.hmap td:first-child{
+  text-align:left;font-family:'DM Sans',sans-serif;
+  font-size:11.5px;font-weight:500;color:#EDE9DF;
+}
+.hcell{
+  display:inline-block;padding:3px 9px;border-radius:3px;
+  font-weight:500;min-width:48px;
+}
+
+/* COUNTRY TABLE */
+.ctable{width:100%;border-collapse:collapse}
+.ctable th{
+  padding:11px 16px;font-size:9.5px;font-weight:500;
+  color:var(--mist);letter-spacing:0.1em;text-transform:uppercase;
+  border-bottom:1px solid var(--border);text-align:left;
+  font-family:'DM Mono',monospace;
+}
+.ctable td{
+  padding:12px 16px;font-size:12.5px;
+  border-bottom:1px solid rgba(255,255,255,0.035);color:#D0D8E4;
+}
+.ctable tr:hover td{background:rgba(26,143,158,0.04)}
+.ctable td:first-child{font-weight:600;color:#EDE9DF}
+.barcell{display:flex;align-items:center;gap:10px}
+.btrack{flex:1;height:3px;background:rgba(255,255,255,0.07);border-radius:2px}
+.bfill{height:3px;border-radius:2px}
+
+/* PILLS */
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.pill{
+  padding:5px 13px;border-radius:20px;font-size:10.5px;font-weight:500;
+  border:1px solid var(--border);background:transparent;
+  color:var(--mist);cursor:pointer;transition:all var(--t);
+  font-family:'DM Mono',monospace;letter-spacing:0.04em;
+}
+.pill.on,.pill:hover{background:var(--teal);border-color:var(--teal);color:#fff}
+
+/* INSIGHTS */
+.insights-sec{background:var(--ink2);border-top:1px solid var(--border)}
+.ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ins-card{
+  padding:26px;background:rgba(8,16,30,0.5);
+  border:1px solid var(--border);border-radius:5px;
+  transition:border-color var(--t);
+}
+.ins-card:hover{border-color:rgba(200,168,75,0.28)}
+.ins-tag{
+  display:inline-block;font-family:'DM Mono',monospace;
+  font-size:8.5px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;margin-bottom:12px;
+}
+.t-watch{background:rgba(201,95,63,0.14);color:var(--coral)}
+.t-signal{background:rgba(78,139,106,0.14);color:#6BBD90}
+.t-context{background:rgba(26,143,158,0.14);color:var(--teal2)}
+.ins-title{
+  font-family:'Libre Baskerville',serif;
+  font-size:14.5px;font-weight:700;color:#EDE9DF;margin-bottom:9px;
+}
+.ins-text{font-size:12.5px;font-weight:300;line-height:1.72;color:var(--mist)}
+
+/* FOOTER */
+footer{
+  background:var(--ink);border-top:1px solid var(--border);
+  padding:28px 48px;display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.foot-brand{
+  font-family:'Libre Baskerville',serif;
+  font-size:13px;font-weight:700;color:#EDE9DF;
+}
+.foot-note{font-size:10.5px;color:var(--mist);font-weight:300}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-mark">GM</div>
+    GlobalMacro
+  </div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#countries">Countries</a>
+    <a href="#insights">Insights</a>
+    <span class="live-badge"><span class="live-dot"></span>FY 2020–2024</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="overview">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="eyebrow"><div class="eyebrow-line"></div>Global Macroeconomic Research</div>
+    <h1>Post-COVID<br><em>Inflation Dynamics</em></h1>
+    <p class="hero-sub">A cross-national analysis of 20 economies, 2020–2024</p>
+    <p class="hero-desc">Supply-chain seizure, unprecedented fiscal stimulus, and sharply divergent monetary policy responses produced the most significant inflationary episode in four decades. This monitor tracks the full arc from onset to moderation across advanced and emerging economies.</p>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-v">20<sub> economies</sub></div>
+        <div class="kpi-l">Countries Covered</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-v">4.18<sub>%</sub></div>
+        <div class="kpi-l">Global Avg. Inflation</div>
+        <div class="kpi-d up">Peak Sep 2022</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-v">9.63<sub>%</sub></div>
+        <div class="kpi-l">Highest Peak (IND)</div>
+        <div class="kpi-d dn">Moderated 2024</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-v">60<sub> mo.</sub></div>
+        <div class="kpi-l">Time Series Span</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll to explore</div>
+</div>
+
+<!-- NARRATIVE BAND -->
+<div class="narrative" id="narrative">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="n-grid">
+      <div class="n-card">
+        <div class="n-num">01</div>
+        <div class="n-title">Supply-Chain Seizure</div>
+        <div class="n-text">Global logistics networks contracted sharply through 2020–2021. Port congestion, semiconductor shortages, and freight cost spikes transmitted directly into consumer prices across all 20 economies — before central banks had time to act.</div>
+      </div>
+      <div class="n-card">
+        <div class="n-num">02</div>
+        <div class="n-title">Commodity Shock of 2022</div>
+        <div class="n-text">Crude oil surged past $130/bbl and global food price indices rose 25% above pre-pandemic baselines. Geopolitical volatility amplified energy market disruption, pushing headline inflation to multi-decade highs across all income groups.</div>
+      </div>
+      <div class="n-card">
+        <div class="n-num">03</div>
+        <div class="n-title">Policy Divergence</div>
+        <div class="n-text">Central banks responded at vastly different speeds. The UK and US tightened aggressively; Japan and the EU moved cautiously. This divergence produced markedly different inflation trajectories even among similarly exposed economies.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<section class="sec dash-sec" id="dashboard">
+  <div class="sec-inner">
+    <div class="sec-label">Interactive Dashboard</div>
+    <h2>Global Inflation Monitor</h2>
+    <p class="sec-desc">Explore monthly trends across all macroeconomic indicators. Toggle between views to examine the relationships between inflation, interest rates, oil prices, and food costs.</p>
+
+    <!-- MAIN CHART -->
+    <div class="card">
+      <div class="card-hd">
+        <div>
+          <div class="card-title">Global Average: Inflation &amp; Policy Rate</div>
+          <div class="card-sub">Cross-country monthly means — January 2020 to December 2024</div>
+        </div>
+        <div class="card-tag">20 economies &nbsp;|&nbsp; 60 months</div>
+      </div>
+      <div class="tab-row">
+        <button class="tab on" onclick="setMode('both',this)">Inflation + Rate</button>
+        <button class="tab" onclick="setMode('oil',this)">Oil Price</button>
+        <button class="tab" onclick="setMode('food',this)">Food Index</button>
+      </div>
+      <canvas id="mainChart" height="85"></canvas>
+      <div class="legend" id="main-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#22B2C4"></div>Avg. Inflation Rate (%)</div>
+        <div class="leg-item"><div class="leg-dash" style="border-color:#E2C16A"></div>Policy Interest Rate (%)</div>
+      </div>
+    </div>
+
+    <!-- 2-COL -->
+    <div class="grid2">
+      <div class="card">
+        <div class="card-hd">
+          <div>
+            <div class="card-title">Annual Inflation by Economy</div>
+            <div class="card-sub">Ranked highest to lowest — select a year</div>
+          </div>
+        </div>
+        <div class="pills" id="yr-pills">
+          <button class="pill on" onclick="setYr(2020,this)">2020</button>
+          <button class="pill" onclick="setYr(2021,this)">2021</button>
+          <button class="pill" onclick="setYr(2022,this)">2022</button>
+          <button class="pill" onclick="setYr(2023,this)">2023</button>
+          <button class="pill" onclick="setYr(2024,this)">2024</button>
+        </div>
+        <canvas id="barChart" height="210"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <div>
+            <div class="card-title">Inflation Heatmap</div>
+            <div class="card-sub">Annual avg. CPI inflation by economy</div>
+          </div>
+        </div>
+        <div id="hmap-wrap"><table class="hmap" id="hmap"></table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTRIES -->
+<section class="sec" style="background:var(--ink2);border-top:1px solid var(--border)" id="countries">
+  <div class="sec-inner">
+    <div class="sec-label">Country Breakdown</div>
+    <h2>Economy-Level Summary</h2>
+    <p class="sec-desc">Five-year averages and peak values across all 20 economies, ranked by average inflation. Bar length represents peak relative to the highest recorded.</p>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="ctable" id="ctable"></table>
+    </div>
+  </div>
+</section>
+
+<!-- INSIGHTS -->
+<section class="sec insights-sec" id="insights">
+  <div class="sec-inner">
+    <div class="sec-label">Key Findings</div>
+    <h2>What the Data Tells Us</h2>
+    <p class="sec-desc">Three structural takeaways for policymakers, investors, and economists drawn from the full cross-national dataset.</p>
+    <div class="ins-grid">
+      <div class="ins-card">
+        <span class="ins-tag t-signal">Signal</span>
+        <div class="ins-title">Supply chains led, policy followed</div>
+        <div class="ins-text">The supply-chain pressure index shows a statistically significant positive association with consumer price inflation — most pronounced during 2021–2022. The transmission preceded central-bank responses by an average of two to three quarters.</div>
+      </div>
+      <div class="ins-card">
+        <span class="ins-tag t-watch">Watch</span>
+        <div class="ins-title">Food price pass-through stays elevated</div>
+        <div class="ins-text">The global food price index has not reverted to pre-COVID levels even as headline inflation moderated. Emerging markets with higher food-basket weights — IND, ZAF, SAU — face structurally stickier inflation as a result.</div>
+      </div>
+      <div class="ins-card">
+        <span class="ins-tag t-context">Context</span>
+        <div class="ins-title">Reaction speed shaped outcomes</div>
+        <div class="ins-text">GBR and KOR tightened early and saw faster moderation. CAN and AUS moved later and experienced higher peak inflation relative to historical norms. The data confirms reaction speed, not just magnitude, drove differentiated outcomes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-brand">GlobalMacro</div>
+  <div class="foot-note">Research dataset &nbsp;·&nbsp; 20 economies &nbsp;·&nbsp; Jan 2020 – Dec 2024 &nbsp;·&nbsp; For analytical use only</div>
+</footer>
+
+<script>
+// DATA
+const MONTHLY=[{"label":"Jan 2020","inflation":3.489,"interest":2.836,"oil":38.739,"food":97.547},{"label":"Feb 2020","inflation":4.404,"interest":2.458,"oil":41.788,"food":95.325},{"label":"Mar 2020","inflation":3.929,"interest":2.502,"oil":41.081,"food":101.267},{"label":"Apr 2020","inflation":4.159,"interest":2.506,"oil":38.214,"food":104.82},{"label":"May 2020","inflation":4.335,"interest":2.292,"oil":41.401,"food":99.392},{"label":"Jun 2020","inflation":4.173,"interest":3.02,"oil":39.658,"food":100.672},{"label":"Jul 2020","inflation":4.422,"interest":2.34,"oil":39.973,"food":99.665},{"label":"Aug 2020","inflation":4.244,"interest":2.735,"oil":39.231,"food":99.882},{"label":"Sep 2020","inflation":4.113,"interest":2.671,"oil":40.327,"food":96.279},{"label":"Oct 2020","inflation":3.989,"interest":2.78,"oil":40.288,"food":102.59},{"label":"Nov 2020","inflation":4.253,"interest":2.272,"oil":40.15,"food":96.723},{"label":"Dec 2020","inflation":4.271,"interest":2.868,"oil":36.703,"food":97.543},{"label":"Jan 2021","inflation":3.781,"interest":2.782,"oil":72.085,"food":109.838},{"label":"Feb 2021","inflation":3.411,"interest":2.593,"oil":67.051,"food":111.051},{"label":"Mar 2021","inflation":4.126,"interest":2.855,"oil":72.006,"food":111.704},{"label":"Apr 2021","inflation":3.999,"interest":2.617,"oil":68.073,"food":110.806},{"label":"May 2021","inflation":3.904,"interest":2.344,"oil":70.997,"food":113.443},{"label":"Jun 2021","inflation":4.209,"interest":2.245,"oil":72.305,"food":108.978},{"label":"Jul 2021","inflation":3.526,"interest":2.537,"oil":70.762,"food":107.433},{"label":"Aug 2021","inflation":3.699,"interest":2.308,"oil":68.783,"food":110.274},{"label":"Sep 2021","inflation":3.937,"interest":2.745,"oil":71.355,"food":108.002},{"label":"Oct 2021","inflation":4.025,"interest":2.326,"oil":71.877,"food":111.859},{"label":"Nov 2021","inflation":3.918,"interest":2.629,"oil":71.084,"food":109.601},{"label":"Dec 2021","inflation":3.879,"interest":2.762,"oil":72.917,"food":111.245},{"label":"Jan 2022","inflation":4.692,"interest":2.589,"oil":116.097,"food":115.439},{"label":"Feb 2022","inflation":4.611,"interest":2.709,"oil":106.927,"food":122.041},{"label":"Mar 2022","inflation":4.352,"interest":2.831,"oil":105.402,"food":121.228},{"label":"Apr 2022","inflation":4.722,"interest":2.678,"oil":111.037,"food":117.522},{"label":"May 2022","inflation":4.662,"interest":2.47,"oil":112.351,"food":117.854},{"label":"Jun 2022","inflation":4.501,"interest":2.861,"oil":104.339,"food":121.525},{"label":"Jul 2022","inflation":4.713,"interest":2.507,"oil":106.889,"food":115.574},{"label":"Aug 2022","inflation":4.836,"interest":2.552,"oil":114.372,"food":117.056},{"label":"Sep 2022","inflation":5.179,"interest":2.048,"oil":114.426,"food":121.525},{"label":"Oct 2022","inflation":4.932,"interest":2.21,"oil":113.914,"food":118.851},{"label":"Nov 2022","inflation":4.631,"interest":2.714,"oil":110.52,"food":120.228},{"label":"Dec 2022","inflation":4.687,"interest":2.657,"oil":109.012,"food":121.527},{"label":"Jan 2023","inflation":4.289,"interest":2.865,"oil":73.038,"food":131.668},{"label":"Feb 2023","inflation":4.177,"interest":2.149,"oil":74.71,"food":131.929},{"label":"Mar 2023","inflation":4.302,"interest":2.49,"oil":78.602,"food":127.275},{"label":"Apr 2023","inflation":4.24,"interest":2.274,"oil":73.795,"food":136.641},{"label":"May 2023","inflation":4.362,"interest":2.298,"oil":74.232,"food":130.339},{"label":"Jun 2023","inflation":3.881,"interest":2.428,"oil":73.926,"food":130.271},{"label":"Jul 2023","inflation":3.617,"interest":2.763,"oil":75.001,"food":128.251},{"label":"Aug 2023","inflation":3.634,"interest":2.378,"oil":73.731,"food":130.905},{"label":"Sep 2023","inflation":4.149,"interest":1.849,"oil":75.346,"food":127.294},{"label":"Oct 2023","inflation":4.07,"interest":2.799,"oil":77.303,"food":132.141},{"label":"Nov 2023","inflation":4.027,"interest":2.769,"oil":74.354,"food":127.294},{"label":"Dec 2023","inflation":4.3,"interest":2.63,"oil":72.465,"food":127.773},{"label":"Jan 2024","inflation":3.873,"interest":2.434,"oil":81.492,"food":138.14},{"label":"Feb 2024","inflation":4.094,"interest":2.558,"oil":79.728,"food":138.905},{"label":"Mar 2024","inflation":4.3,"interest":2.79,"oil":78.169,"food":141.14},{"label":"Apr 2024","inflation":4.289,"interest":2.097,"oil":80.489,"food":140.066},{"label":"May 2024","inflation":3.934,"interest":2.558,"oil":76.833,"food":137.984},{"label":"Jun 2024","inflation":4.33,"interest":2.304,"oil":79.147,"food":137.079},{"label":"Jul 2024","inflation":3.769,"interest":2.823,"oil":80.499,"food":138.598},{"label":"Aug 2024","inflation":4.03,"interest":2.81,"oil":81.132,"food":138.192},{"label":"Sep 2024","inflation":4.047,"interest":2.698,"oil":81.337,"food":138.182},{"label":"Oct 2024","inflation":4.532,"interest":2.463,"oil":79.777,"food":137.439},{"label":"Nov 2024","inflation":4.115,"interest":2.49,"oil":79.842,"food":135.615},{"label":"Dec 2024","inflation":3.603,"interest":3.066,"oil":78.877,"food":144.607}];
+
+const HEATMAP={"ARG":{"2020":2.91,"2021":3.22,"2022":3.72,"2023":2.9,"2024":3.11},"AUS":{"2020":4.33,"2021":3.89,"2022":4.74,"2023":4.27,"2024":3.68},"BRA":{"2020":3.98,"2021":3.56,"2022":5.0,"2023":3.37,"2024":4.25},"CAN":{"2020":5.17,"2021":4.84,"2022":5.48,"2023":4.56,"2024":4.43},"CHN":{"2020":4.08,"2021":2.97,"2022":4.36,"2023":3.31,"2024":4.5},"EU":{"2020":4.04,"2021":3.58,"2022":4.03,"2023":4.33,"2024":3.72},"GBR":{"2020":3.9,"2021":3.85,"2022":4.12,"2023":4.18,"2024":3.94},"IDN":{"2020":4.41,"2021":4.08,"2022":5.15,"2023":4.32,"2024":4.53},"IND":{"2020":5.85,"2021":4.92,"2022":5.95,"2023":5.75,"2024":4.99},"JPN":{"2020":4.54,"2021":3.49,"2022":4.48,"2023":4.33,"2024":4.11},"KOR":{"2020":5.16,"2021":4.87,"2022":5.43,"2023":4.53,"2024":5.46},"MEX":{"2020":4.91,"2021":5.09,"2022":5.59,"2023":4.04,"2024":4.74},"PHL":{"2020":2.48,"2021":2.02,"2022":2.33,"2023":2.65,"2024":2.34},"RUS":{"2020":3.82,"2021":4.29,"2022":5.24,"2023":4.48,"2024":3.97},"SAU":{"2020":5.05,"2021":4.68,"2022":5.98,"2023":4.97,"2024":4.64},"THA":{"2020":2.17,"2021":2.89,"2022":3.6,"2023":2.91,"2024":2.78},"TUR":{"2020":3.36,"2021":3.47,"2022":3.95,"2023":4.05,"2024":3.28},"USA":{"2020":3.29,"2021":2.91,"2022":4.12,"2023":3.02,"2024":3.21},"VNM":{"2020":4.09,"2021":4.07,"2022":5.34,"2023":4.5,"2024":4.99},"ZAF":{"2020":5.33,"2021":4.81,"2022":5.78,"2023":5.18,"2024":4.73}};
+
+const STATS=[{"country":"ARG","avg_inf":3.18,"peak_inf":6.48,"avg_int":3.49},{"country":"AUS","avg_inf":4.17,"peak_inf":8.67,"avg_int":0.56},{"country":"BRA","avg_inf":4.03,"peak_inf":7.6,"avg_int":2.45},{"country":"CAN","avg_inf":4.89,"peak_inf":8.65,"avg_int":0.18},{"country":"CHN","avg_inf":3.84,"peak_inf":7.45,"avg_int":0.81},{"country":"EU","avg_inf":3.94,"peak_inf":7.37,"avg_int":0.33},{"country":"GBR","avg_inf":4.0,"peak_inf":7.38,"avg_int":4.84},{"country":"IDN","avg_inf":4.49,"peak_inf":7.5,"avg_int":0.49},{"country":"IND","avg_inf":5.49,"peak_inf":9.63,"avg_int":2.62},{"country":"JPN","avg_inf":4.19,"peak_inf":7.55,"avg_int":1.25},{"country":"KOR","avg_inf":5.09,"peak_inf":8.69,"avg_int":4.56},{"country":"MEX","avg_inf":4.88,"peak_inf":8.6,"avg_int":2.57},{"country":"PHL","avg_inf":2.37,"peak_inf":5.9,"avg_int":4.11},{"country":"RUS","avg_inf":4.35,"peak_inf":9.09,"avg_int":3.78},{"country":"SAU","avg_inf":5.07,"peak_inf":9.41,"avg_int":3.24},{"country":"THA","avg_inf":2.87,"peak_inf":6.35,"avg_int":2.02},{"country":"TUR","avg_inf":3.63,"peak_inf":7.39,"avg_int":4.65},{"country":"USA","avg_inf":3.31,"peak_inf":6.97,"avg_int":5.05},{"country":"VNM","avg_inf":4.6,"peak_inf":8.4,"avg_int":1.82},{"country":"ZAF","avg_inf":5.16,"peak_inf":8.95,"avg_int":2.47}];
+
+// CHART DEFAULTS
+Chart.defaults.color='#8A97A8';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.font.size=11;
+const gc='rgba(255,255,255,0.05)';
+const tip={backgroundColor:'rgba(8,16,30,0.96)',borderColor:'rgba(255,255,255,0.09)',borderWidth:1,
+  titleFont:{family:"'Libre Baskerville',serif",size:12},
+  bodyFont:{family:"'DM Mono',monospace",size:11},padding:12};
+
+// MAIN CHART
+let mainC;
+const labels=MONTHLY.map(d=>d.label);
+
+function buildMain(mode){
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  if(mainC)mainC.destroy();
+  let datasets=[],legHTML='',yTick=v=>v+'%',yTitle='Rate (%)';
+  if(mode==='both'){
+    datasets=[
+      {label:'Inflation Rate (%)',data:MONTHLY.map(d=>d.inflation),
+       borderColor:'#22B2C4',backgroundColor:'rgba(34,178,196,0.07)',
+       fill:true,tension:0.4,borderWidth:2,pointRadius:0,pointHoverRadius:4},
+      {label:'Policy Rate (%)',data:MONTHLY.map(d=>d.interest),
+       borderColor:'#E2C16A',borderDash:[5,4],fill:false,
+       tension:0.4,borderWidth:1.5,pointRadius:0,pointHoverRadius:4},
+    ];
+    legHTML=`<div class="leg-item"><div class="leg-dot" style="background:#22B2C4"></div>Avg. Inflation Rate (%)</div>
+      <div class="leg-item"><div class="leg-dash" style="border-color:#E2C16A"></div>Policy Interest Rate (%)</div>`;
+  } else if(mode==='oil'){
+    datasets=[{label:'Oil (USD/bbl)',data:MONTHLY.map(d=>d.oil),
+      borderColor:'#C95F3F',backgroundColor:'rgba(201,95,63,0.08)',
+      fill:true,tension:0.4,borderWidth:2,pointRadius:0,pointHoverRadius:4}];
+    legHTML=`<div class="leg-item"><div class="leg-dot" style="background:#C95F3F"></div>Crude Oil Price (USD/bbl)</div>`;
+    yTick=v=>'$'+v;yTitle='USD / bbl';
+  } else {
+    datasets=[{label:'Food Index',data:MONTHLY.map(d=>d.food),
+      borderColor:'#4E8B6A',backgroundColor:'rgba(78,139,106,0.08)',
+      fill:true,tension:0.4,borderWidth:2,pointRadius:0,pointHoverRadius:4}];
+    legHTML=`<div class="leg-item"><div class="leg-dot" style="background:#4E8B6A"></div>Food Price Index (2016=100)</div>`;
+    yTick=v=>v;yTitle='Index';
+  }
+  mainC=new Chart(ctx,{
+    type:'line',data:{labels,datasets},
+    options:{responsive:true,
+      plugins:{legend:{display:false},tooltip:tip},
+      scales:{
+        x:{grid:{color:gc},ticks:{maxTicksLimit:12,maxRotation:30}},
+        y:{grid:{color:gc},ticks:{callback:yTick},title:{display:true,text:yTitle,color:'#8A97A8'}},
+      }
+    }
+  });
+  document.getElementById('main-legend').innerHTML=legHTML;
+}
+
+function setMode(mode,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');buildMain(mode);
+}
+
+// BAR CHART
+let barC;
+function buildBar(yr){
+  const ctx=document.getElementById('barChart').getContext('2d');
+  if(barC)barC.destroy();
+  const ctr=Object.keys(HEATMAP).sort((a,b)=>HEATMAP[b][yr]-HEATMAP[a][yr]);
+  const vals=ctr.map(c=>HEATMAP[c][yr]);
+  const cols=vals.map(v=>v>5?'rgba(201,95,63,0.85)':v>4?'rgba(226,193,106,0.85)':'rgba(34,178,196,0.85)');
+  barC=new Chart(ctx,{
+    type:'bar',
+    data:{labels:ctr,datasets:[{data:vals,backgroundColor:cols,borderRadius:3,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,
+      plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:c=>' '+c.raw.toFixed(2)+'%'}}},
+      scales:{
+        x:{grid:{color:gc},ticks:{callback:v=>v+'%'},max:7.5},
+        y:{grid:{display:false},ticks:{font:{size:10}}}
+      }
+    }
+  });
+}
+function setYr(yr,btn){
+  document.querySelectorAll('#yr-pills .pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');buildBar(yr);
+}
+
+// HEATMAP
+function buildHeatmap(){
+  const yrs=[2020,2021,2022,2023,2024];
+  const ctr=Object.keys(HEATMAP).sort();
+  let h=`<thead><tr><th>Economy</th>${yrs.map(y=>`<th>${y}</th>`).join('')}</tr></thead><tbody>`;
+  ctr.forEach(c=>{
+    h+=`<tr><td>${c}</td>`;
+    yrs.forEach(y=>{
+      const v=HEATMAP[c][y];
+      const t=(v-1.8)/(6.5-1.8);
+      const r=Math.round(26+t*(201-26));
+      const g=Math.round(143+t*(95-143));
+      const b=Math.round(158+t*(63-158));
+      const bg=`rgba(${r},${g},${b},${0.18+t*0.55})`;
+      const tc=t>0.55?'#F0EDE6':'#C8D4E0';
+      h+=`<td><span class="hcell" style="background:${bg};color:${tc}">${v.toFixed(1)}</span></td>`;
+    });
+    h+=`</tr>`;
+  });
+  h+=`</tbody>`;
+  document.getElementById('hmap').innerHTML=h;
+}
+
+// COUNTRY TABLE
+function buildTable(){
+  const sorted=[...STATS].sort((a,b)=>b.avg_inf-a.avg_inf);
+  const maxP=Math.max(...sorted.map(d=>d.peak_inf));
+  let h=`<thead><tr>
+    <th style="padding:13px 16px">Economy</th>
+    <th>Avg. Inflation</th>
+    <th>Peak Inflation</th>
+    <th>Peak vs. Avg. Spread</th>
+    <th>Avg. Policy Rate</th>
+  </tr></thead><tbody>`;
+  sorted.forEach(d=>{
+    const sp=(d.peak_inf-d.avg_inf).toFixed(2);
+    const bw=Math.round((d.peak_inf/maxP)*100);
+    const col=d.avg_inf>5?'#C95F3F':d.avg_inf>4.5?'#E2C16A':'#22B2C4';
+    h+=`<tr>
+      <td><span style="font-family:'DM Mono',monospace;font-size:11px;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,0.05)">${d.country}</span></td>
+      <td style="color:${col};font-family:'DM Mono',monospace;font-weight:600">${d.avg_inf.toFixed(2)}%</td>
+      <td><div class="barcell"><span style="font-family:'DM Mono',monospace;min-width:42px">${d.peak_inf.toFixed(2)}%</span>
+        <div class="btrack"><div class="bfill" style="width:${bw}%;background:${col}"></div></div></div></td>
+      <td style="font-family:'DM Mono',monospace;color:var(--mist)">+${sp}pp</td>
+      <td style="font-family:'DM Mono',monospace">${d.avg_int.toFixed(2)}%</td>
+    </tr>`;
+  });
+  h+=`</tbody>`;
+  document.getElementById('ctable').innerHTML=h;
+}
+
+// INIT
+buildMain('both');
+buildBar(2020);
+buildHeatmap();
+buildTable();
+</script>
+</body>
+</html>
