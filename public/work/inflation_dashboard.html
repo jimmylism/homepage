@@ -423,24 +423,37 @@ footer{
     </div>
 
     <!-- 2-COL -->
-    <div class="grid2">
-      <div class="card">
-        <div class="card-hd">
-          <div>
-            <div class="card-title">Annual Inflation by Economy</div>
-            <div class="card-sub">Ranked highest to lowest — select a year</div>
+    <div class="grid2" style="align-items:stretch">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div class="card">
+          <div class="card-hd">
+            <div>
+              <div class="card-title">Annual Inflation by Economy</div>
+              <div class="card-sub">Ranked highest to lowest — select a year</div>
+            </div>
+          </div>
+          <div class="pills" id="yr-pills">
+            <button class="pill on" onclick="setYr(2020,this)">2020</button>
+            <button class="pill" onclick="setYr(2021,this)">2021</button>
+            <button class="pill" onclick="setYr(2022,this)">2022</button>
+            <button class="pill" onclick="setYr(2023,this)">2023</button>
+            <button class="pill" onclick="setYr(2024,this)">2024</button>
+          </div>
+          <canvas id="barChart" height="190"></canvas>
+        </div>
+        <div class="card" style="flex:1;display:flex;flex-direction:column">
+          <div class="card-hd">
+            <div>
+              <div class="card-title">Inflation vs. Policy Rate</div>
+              <div class="card-sub">5-yr avg by economy — does tighter policy mean lower inflation?</div>
+            </div>
+          </div>
+          <div style="flex:1;position:relative;min-height:0">
+            <canvas id="scatterChart" style="position:absolute;inset:0;width:100%!important;height:100%!important"></canvas>
           </div>
         </div>
-        <div class="pills" id="yr-pills">
-          <button class="pill on" onclick="setYr(2020,this)">2020</button>
-          <button class="pill" onclick="setYr(2021,this)">2021</button>
-          <button class="pill" onclick="setYr(2022,this)">2022</button>
-          <button class="pill" onclick="setYr(2023,this)">2023</button>
-          <button class="pill" onclick="setYr(2024,this)">2024</button>
-        </div>
-        <canvas id="barChart" height="210"></canvas>
       </div>
-      <div class="card">
+      <div class="card" style="display:flex;flex-direction:column">
         <div class="card-hd">
           <div>
             <div class="card-title">Inflation Heatmap</div>
@@ -640,11 +653,41 @@ function buildTable(){
   document.getElementById('ctable').innerHTML=h;
 }
 
+// SCATTER CHART
+function buildScatter(){
+  const ctx=document.getElementById('scatterChart').getContext('2d');
+  const data=STATS.map(d=>({x:d.avg_int,y:d.avg_inf,label:d.country}));
+  new Chart(ctx,{
+    type:'scatter',maintainAspectRatio:false,
+    data:{datasets:[{
+      data,
+      backgroundColor:data.map(d=>d.y>5?'rgba(201,95,63,0.8)':d.y>4?'rgba(226,193,106,0.8)':'rgba(34,178,196,0.8)'),
+      pointRadius:5,pointHoverRadius:7
+    }]},
+    options:{responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{...tip,callbacks:{
+          label:c=>{
+            const d=data[c.dataIndex];
+            return ` ${d.label}  inf:${d.y.toFixed(2)}%  rate:${d.x.toFixed(2)}%`;
+          }
+        }}
+      },
+      scales:{
+        x:{grid:{color:gc},title:{display:true,text:'Avg. Policy Rate (%)',color:'#8A97A8'},ticks:{callback:v=>v+'%'}},
+        y:{grid:{color:gc},title:{display:true,text:'Avg. Inflation (%)',color:'#8A97A8'},ticks:{callback:v=>v+'%'}}
+      }
+    }
+  });
+}
+
 // INIT
 buildMain('both');
 buildBar(2020);
 buildHeatmap();
 buildTable();
+buildScatter();
 </script>
 </body>
 </html>
