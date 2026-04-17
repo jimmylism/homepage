@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -568,6 +569,73 @@
             border-radius: 50%;
         }
 
+        .pa-color-row {
+            display: flex;
+            gap: 0;
+            border-radius: 3px;
+            overflow: hidden;
+            height: 20px;
+        }
+
+        .pa-color-strip {
+            flex: 1;
+            height: 100%;
+        }
+
+        .pa-token-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.35rem;
+        }
+
+        .pa-token {
+            background: rgba(181,154,106,0.05);
+            border: 1px solid rgba(181,154,106,0.15);
+            border-radius: 2px;
+            padding: 0.35rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .pa-token-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .pa-token-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.4rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(240,232,216,0.6);
+        }
+
+        .pa-shadow-row {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .pa-shadow-chip {
+            flex: 1;
+            height: 28px;
+            border-radius: 3px;
+            background: #1a1710;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pa-shadow-label {
+            font-size: 0.38rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(181,154,106,0.5);
+        }
+
         /* Velox SaaS Landing */
         .preview-saas {
             background: #060a14;
@@ -711,6 +779,110 @@
             font-size: 0.45rem;
             color: rgba(255,255,255,0.5);
             line-height: 1.5;
+        }
+
+        .ps-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .ps-pricing {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+        }
+
+        .ps-plan {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 5px;
+            padding: 0.6rem 0.65rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .ps-plan.featured {
+            border-color: rgba(124,104,254,0.4);
+            background: rgba(124,104,254,0.06);
+        }
+
+        .ps-plan-name {
+            font-size: 0.42rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .ps-plan.featured .ps-plan-name { color: #7c68fe; }
+
+        .ps-plan-price {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.95);
+            line-height: 1;
+        }
+
+        .ps-plan-price span {
+            font-size: 0.4rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .ps-plan-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .ps-plan-feat {
+            font-size: 0.38rem;
+            color: rgba(255,255,255,0.45);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .ps-plan-feat::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(124,104,254,0.5);
+            flex-shrink: 0;
+        }
+
+        .ps-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .ps-stat {
+            padding: 0.5rem 0.6rem;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+        }
+
+        .ps-stat:last-child { border-right: none; }
+
+        .ps-stat-val {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.9);
+            line-height: 1;
+        }
+
+        .ps-stat-val span { color: #7c68fe; }
+
+        .ps-stat-label {
+            font-size: 0.38rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 0.15rem;
         }
 
         /* Watchmaker Landing */
@@ -967,11 +1139,179 @@
             .design-divider { padding: 3rem 1.5rem; }
 
             footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+
+            /* Velox mock — simplify on tablet */
+            .ps-pricing { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 550px) {
             .nav-links { display: none; }
-            .hero-title { font-size: 2.5rem; }
+            .hero-title { font-size: 2rem; }
+            .hero-sub { font-size: 0.95rem; }
+            .hero { padding: 0 1.25rem 3rem; }
+
+            .work-section { padding: 3rem 1.25rem; }
+            .work-info { padding: 2rem 1.25rem; }
+            .section-eyebrow { font-size: 0.65rem; }
+
+            .work-title { font-size: clamp(1.5rem, 5vw, 2.6rem); }
+            .work-desc { font-size: 0.85rem; }
+
+            .about-strip { padding: 3rem 1.25rem; }
+            .about-text { font-size: clamp(1.1rem, 4vw, 2rem); }
+
+            /* Mock previews: reduce aspect ratio so they're not huge on mobile */
+            .work-preview { aspect-ratio: 4/3; }
+
+            /* Framer mock */
+            .pf-nav { width: 80px; }
+            .pf-canvas { grid-template-columns: repeat(2, 1fr); }
+
+            /* Aurum mock */
+            .pa-token-grid { grid-template-columns: 1fr 1fr; }
+
+            /* Velox mock */
+            .ps-pricing { grid-template-columns: 1fr; }
+            .ps-cards { grid-template-columns: 1fr 1fr; }
+            .ps-hero { padding: 0.5rem 0; gap: 0.4rem; }
+
+            /* Inflation mock */
+            .pi-tabs { flex-wrap: wrap; }
+            .pi-card-meta { display: none; }
+        }
+
+        /* Inflation Dashboard */
+        .preview-inflation {
+            background: #0c1525;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            overflow: hidden;
+            padding: 1.4rem 1.5rem 1.2rem;
+            gap: 0.9rem;
+        }
+
+        .pi-section-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.42rem;
+            font-weight: 500;
+            color: #C8A84B;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .pi-section-label::before {
+            content: '';
+            width: 12px;
+            height: 1px;
+            background: #C8A84B;
+            opacity: 0.7;
+        }
+
+        .pi-heading {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #EDE9DF;
+            line-height: 1.1;
+            margin-top: -0.3rem;
+        }
+
+        .pi-desc {
+            font-size: 0.5rem;
+            color: #8A97A8;
+            line-height: 1.7;
+            max-width: 36ch;
+            margin-top: -0.4rem;
+        }
+
+        .pi-card {
+            background: rgba(13,26,47,0.7);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .pi-card-hd {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .pi-card-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #EDE9DF;
+        }
+
+        .pi-card-sub {
+            font-size: 0.42rem;
+            color: #8A97A8;
+            margin-top: 0.15rem;
+        }
+
+        .pi-card-meta {
+            font-size: 0.38rem;
+            color: #8A97A8;
+            letter-spacing: 0.04em;
+            text-align: right;
+        }
+
+        .pi-tabs {
+            display: flex;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            width: fit-content;
+            flex-shrink: 0;
+        }
+
+        .pi-tab {
+            padding: 0.28rem 0.6rem;
+            font-size: 0.38rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #8A97A8;
+            border-right: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .pi-tab:last-child { border-right: none; }
+        .pi-tab.on { background: #1A8F9E; color: #fff; }
+
+        .pi-chart {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        .pi-chart canvas {
+            position: absolute;
+            inset: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .pi-legend {
+            display: flex;
+            gap: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .pi-leg-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.36rem;
+            color: #8A97A8;
         }
     </style>
 </head>
@@ -1106,6 +1446,36 @@
                         <div class="pa-btn-primary">Discover</div>
                         <div class="pa-btn-ghost">Learn More</div>
                     </div>
+                    <div class="pa-divider" style="opacity:0.1"></div>
+                    <div>
+                        <div class="pa-type-label" style="margin-bottom:0.4rem">Color System</div>
+                        <div class="pa-color-row">
+                            <div class="pa-color-strip" style="background:#fffdf0"></div>
+                            <div class="pa-color-strip" style="background:#fcea8a"></div>
+                            <div class="pa-color-strip" style="background:#f0c040"></div>
+                            <div class="pa-color-strip" style="background:#d4a017"></div>
+                            <div class="pa-color-strip" style="background:#b8860b"></div>
+                            <div class="pa-color-strip" style="background:#9a6e08"></div>
+                            <div class="pa-color-strip" style="background:#7a5406"></div>
+                            <div class="pa-color-strip" style="background:#2a2a2a"></div>
+                            <div class="pa-color-strip" style="background:#111111"></div>
+                            <div class="pa-color-strip" style="background:#080808"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="pa-type-label" style="margin-bottom:0.4rem">Design Tokens</div>
+                        <div class="pa-token-grid">
+                            <div class="pa-token"><div class="pa-token-dot" style="background:#d4a017"></div><div class="pa-token-name">Primary</div></div>
+                            <div class="pa-token"><div class="pa-token-dot" style="background:#faf7f0"></div><div class="pa-token-name">Cream</div></div>
+                            <div class="pa-token"><div class="pa-token-dot" style="background:#080808"></div><div class="pa-token-name">Surface</div></div>
+                            <div class="pa-token"><div class="pa-token-dot" style="background:rgba(212,160,23,0.25);border:1px solid rgba(212,160,23,0.4)"></div><div class="pa-token-name">Border</div></div>
+                        </div>
+                    </div>
+                    <div class="pa-shadow-row">
+                        <div class="pa-shadow-chip" style="box-shadow:0 2px 12px rgba(212,160,23,0.15)"><div class="pa-shadow-label">SM</div></div>
+                        <div class="pa-shadow-chip" style="box-shadow:0 4px 24px rgba(212,160,23,0.22)"><div class="pa-shadow-label">MD</div></div>
+                        <div class="pa-shadow-chip" style="box-shadow:0 8px 48px rgba(212,160,23,0.30)"><div class="pa-shadow-label">LG</div></div>
+                    </div>
                 </div>
             </div>
             <div class="work-info">
@@ -1164,6 +1534,47 @@
                             <div class="ps-card-icon"></div>
                             <div class="ps-card-title">Observability</div>
                             <div class="ps-card-text">See everything, always</div>
+                        </div>
+                    </div>
+                    <div class="ps-divider"></div>
+                    <div class="ps-pricing">
+                        <div class="ps-plan">
+                            <div class="ps-plan-name">Hobby</div>
+                            <div class="ps-plan-price">$0<span>/mo</span></div>
+                            <div class="ps-plan-features">
+                                <div class="ps-plan-feat">3 projects</div>
+                                <div class="ps-plan-feat">100GB bandwidth</div>
+                            </div>
+                        </div>
+                        <div class="ps-plan featured">
+                            <div class="ps-plan-name">Pro</div>
+                            <div class="ps-plan-price">$19<span>/mo</span></div>
+                            <div class="ps-plan-features">
+                                <div class="ps-plan-feat">Unlimited projects</div>
+                                <div class="ps-plan-feat">1TB bandwidth</div>
+                            </div>
+                        </div>
+                        <div class="ps-plan">
+                            <div class="ps-plan-name">Enterprise</div>
+                            <div class="ps-plan-price" style="font-size:0.65rem;padding-top:0.15rem">Custom</div>
+                            <div class="ps-plan-features">
+                                <div class="ps-plan-feat">SLA + SSO</div>
+                                <div class="ps-plan-feat">Dedicated support</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ps-stats">
+                        <div class="ps-stat">
+                            <div class="ps-stat-val"><span>99.9</span>%</div>
+                            <div class="ps-stat-label">Uptime SLA</div>
+                        </div>
+                        <div class="ps-stat">
+                            <div class="ps-stat-val">42<span>ms</span></div>
+                            <div class="ps-stat-label">Avg. cold start</div>
+                        </div>
+                        <div class="ps-stat">
+                            <div class="ps-stat-val"><span>180+</span></div>
+                            <div class="ps-stat-label">Edge locations</div>
                         </div>
                     </div>
                 </div>
@@ -1236,12 +1647,66 @@
 
     </section>
 
+    <section class="work-section">
+        <div class="section-eyebrow">Data Visualization</div>
+
+        <!-- Inflation Dashboard -->
+        <a class="work-item" href="../work/inflation_dashboard.html">
+            <div class="work-preview">
+                <div class="work-preview-inner preview-inflation">
+                    <div class="pi-section-label">Interactive Dashboard</div>
+                    <div class="pi-heading">Global Inflation Monitor</div>
+                    <div class="pi-desc">Explore monthly trends across all macroeconomic indicators. Toggle between views to examine the relationships between inflation, interest rates, oil prices, and food costs.</div>
+                    <div class="pi-card">
+                        <div class="pi-card-hd">
+                            <div>
+                                <div class="pi-card-title">Global Average: Inflation &amp; Policy Rate</div>
+                                <div class="pi-card-sub">Cross-country monthly means — January 2020 to December 2024</div>
+                            </div>
+                            <div class="pi-card-meta">20 economies &nbsp;|&nbsp; 60 months</div>
+                        </div>
+                        <div class="pi-tabs">
+                            <div class="pi-tab on">Inflation + Rate</div>
+                            <div class="pi-tab">Oil Price</div>
+                            <div class="pi-tab">Food Index</div>
+                        </div>
+                        <div class="pi-chart">
+                            <canvas id="mockInflationChart"></canvas>
+                        </div>
+                        <div class="pi-legend">
+                            <div class="pi-leg-item">
+                                <div style="width:10px;height:2px;background:#22B2C4;border-radius:1px"></div>
+                                Avg. Inflation Rate (%)
+                            </div>
+                            <div class="pi-leg-item">
+                                <div style="width:10px;border-top:1.5px dashed #E2C16A"></div>
+                                Policy Interest Rate (%)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="work-info">
+                <div class="work-number">05</div>
+                <div class="work-type">Data Visualization</div>
+                <h2 class="work-title">Post-COVID Inflation Monitor</h2>
+                <p class="work-desc">An interactive dashboard tracking CPI trends across G7 economies from 2020 to present. Data journalism meets financial interface — built for clarity under complexity.</p>
+                <div class="work-tags">
+                    <span class="work-tag">Data Viz</span>
+                    <span class="work-tag">Dashboard</span>
+                    <span class="work-tag">Macroeconomics</span>
+                </div>
+                <span class="work-cta">View project</span>
+            </div>
+        </a>
+    </section>
+
     <!-- About strip -->
     <section class="about-strip" id="about">
         <div class="about-inner">
             <div class="about-label">Approach</div>
             <p class="about-text">
-                Good design is <em>systematic</em> before it is beautiful. A design system is a shared language — components, tokens, and decisions that let a team move fast without losing coherence. <em>These four pieces</em> explore what it looks like when that language is applied consistently, from foundation to final page.
+                Good design is <em>systematic</em> before it is beautiful. A design system is a shared language — components, tokens, and decisions that let a team move fast without losing coherence. <em>These pieces</em> explore what it looks like when that language is applied consistently, from foundation to final page.
             </p>
             <a class="about-cta" href="/">Back to main site</a>
         </div>
@@ -1253,5 +1718,64 @@
         <a class="footer-back" href="/">jimmyhuang.info</a>
     </footer>
 
+<script>
+(function() {
+    const MONTHLY=[{"label":"Jan 2020","inflation":3.489,"interest":2.836},{"label":"Feb 2020","inflation":4.404,"interest":2.458},{"label":"Mar 2020","inflation":3.929,"interest":2.502},{"label":"Apr 2020","inflation":4.159,"interest":2.506},{"label":"May 2020","inflation":4.335,"interest":2.292},{"label":"Jun 2020","inflation":4.173,"interest":3.02},{"label":"Jul 2020","inflation":4.422,"interest":2.34},{"label":"Aug 2020","inflation":4.244,"interest":2.735},{"label":"Sep 2020","inflation":4.113,"interest":2.671},{"label":"Oct 2020","inflation":3.989,"interest":2.78},{"label":"Nov 2020","inflation":4.253,"interest":2.272},{"label":"Dec 2020","inflation":4.271,"interest":2.868},{"label":"Jan 2021","inflation":3.781,"interest":2.782},{"label":"Feb 2021","inflation":3.411,"interest":2.593},{"label":"Mar 2021","inflation":4.126,"interest":2.855},{"label":"Apr 2021","inflation":3.999,"interest":2.617},{"label":"May 2021","inflation":3.904,"interest":2.344},{"label":"Jun 2021","inflation":4.209,"interest":2.245},{"label":"Jul 2021","inflation":3.526,"interest":2.537},{"label":"Aug 2021","inflation":3.699,"interest":2.308},{"label":"Sep 2021","inflation":3.937,"interest":2.745},{"label":"Oct 2021","inflation":4.025,"interest":2.326},{"label":"Nov 2021","inflation":3.918,"interest":2.629},{"label":"Dec 2021","inflation":3.879,"interest":2.762},{"label":"Jan 2022","inflation":4.692,"interest":2.589},{"label":"Feb 2022","inflation":4.611,"interest":2.709},{"label":"Mar 2022","inflation":4.352,"interest":2.831},{"label":"Apr 2022","inflation":4.722,"interest":2.678},{"label":"May 2022","inflation":4.662,"interest":2.47},{"label":"Jun 2022","inflation":4.501,"interest":2.861},{"label":"Jul 2022","inflation":4.713,"interest":2.507},{"label":"Aug 2022","inflation":4.836,"interest":2.552},{"label":"Sep 2022","inflation":5.179,"interest":2.048},{"label":"Oct 2022","inflation":4.932,"interest":2.21},{"label":"Nov 2022","inflation":4.631,"interest":2.714},{"label":"Dec 2022","inflation":4.687,"interest":2.657},{"label":"Jan 2023","inflation":4.289,"interest":2.865},{"label":"Feb 2023","inflation":4.177,"interest":2.149},{"label":"Mar 2023","inflation":4.302,"interest":2.49},{"label":"Apr 2023","inflation":4.24,"interest":2.274},{"label":"May 2023","inflation":4.362,"interest":2.298},{"label":"Jun 2023","inflation":3.881,"interest":2.428},{"label":"Jul 2023","inflation":3.617,"interest":2.763},{"label":"Aug 2023","inflation":3.634,"interest":2.378},{"label":"Sep 2023","inflation":4.149,"interest":1.849},{"label":"Oct 2023","inflation":4.07,"interest":2.799},{"label":"Nov 2023","inflation":4.027,"interest":2.769},{"label":"Dec 2023","inflation":4.3,"interest":2.63},{"label":"Jan 2024","inflation":3.873,"interest":2.434},{"label":"Feb 2024","inflation":4.094,"interest":2.558},{"label":"Mar 2024","inflation":4.3,"interest":2.79},{"label":"Apr 2024","inflation":4.289,"interest":2.097},{"label":"May 2024","inflation":3.934,"interest":2.558},{"label":"Jun 2024","inflation":4.33,"interest":2.304},{"label":"Jul 2024","inflation":3.769,"interest":2.823},{"label":"Aug 2024","inflation":4.03,"interest":2.81},{"label":"Sep 2024","inflation":4.047,"interest":2.698},{"label":"Oct 2024","inflation":4.532,"interest":2.463},{"label":"Nov 2024","inflation":4.115,"interest":2.49},{"label":"Dec 2024","inflation":3.603,"interest":3.066}];
+
+    const gc = 'rgba(255,255,255,0.05)';
+    const tip = {
+        backgroundColor:'rgba(8,16,30,0.96)',borderColor:'rgba(255,255,255,0.09)',borderWidth:1,
+        titleFont:{family:"'DM Sans',sans-serif",size:10},
+        bodyFont:{family:"'DM Sans',sans-serif",size:10},padding:8
+    };
+
+    const ctx = document.getElementById('mockInflationChart');
+    if (!ctx) return;
+
+    Chart.defaults.color = '#8A97A8';
+    Chart.defaults.font.family = "'DM Sans',sans-serif";
+    Chart.defaults.font.size = 9;
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: MONTHLY.map(d => d.label),
+            datasets: [
+                {
+                    label: 'Avg. Inflation Rate (%)',
+                    data: MONTHLY.map(d => d.inflation),
+                    borderColor: '#22B2C4',
+                    backgroundColor: 'rgba(34,178,196,0.07)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    pointHoverRadius: 3,
+                },
+                {
+                    label: 'Policy Interest Rate (%)',
+                    data: MONTHLY.map(d => d.interest),
+                    borderColor: '#E2C16A',
+                    borderDash: [4, 3],
+                    fill: false,
+                    tension: 0.4,
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    pointHoverRadius: 3,
+                }
+            ]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: tip },
+            scales: {
+                x: { grid: { color: gc }, ticks: { maxTicksLimit: 8, maxRotation: 0, font: { size: 8 } } },
+                y: { grid: { color: gc }, ticks: { callback: v => v + '%', font: { size: 8 } } }
+            }
+        }
+    });
+})();
+</script>
 </body>
 </html>
