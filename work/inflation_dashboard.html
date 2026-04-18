@@ -319,6 +319,38 @@ footer{
 
 /* ANIM */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  nav { padding: 0 24px; }
+  .live-badge { display: none; }
+  .hero { padding: 90px 32px 64px; }
+  .hero-desc { max-width: none; }
+  .scroll-hint { display: none; }
+  .n-grid { grid-template-columns: 1fr; }
+  .n-card { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 24px; }
+  .n-card:last-child { border-bottom: none; }
+  .sec-inner { padding: 52px 24px; }
+  .grid2 { grid-template-columns: 1fr; }
+  .ins-grid { grid-template-columns: 1fr 1fr; }
+  footer { padding: 20px 24px; }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  .hero { padding: 78px 20px 52px; }
+  .kpi { padding: 14px 16px; min-width: 90px; }
+  .kpi-row { max-width: none; }
+  .kpi-v { font-size: 20px; }
+  .n-card { padding: 24px 16px; }
+  .n-num { font-size: 36px; }
+  .sec-inner { padding: 36px 16px; }
+  .tab-row { flex-wrap: wrap; width: 100%; }
+  .tab { flex: 1 1 auto; text-align: center; padding: 8px 12px; }
+  .ins-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; align-items: flex-start; padding: 16px 20px; gap: 8px; }
+}
 </style>
 </head>
 <body>
@@ -472,7 +504,7 @@ footer{
     <div class="sec-label">Country Breakdown</div>
     <h2>Economy-Level Summary</h2>
     <p class="sec-desc">Five-year averages and peak values across all 20 economies, ranked by average inflation. Bar length represents peak relative to the highest recorded.</p>
-    <div class="card" style="padding:0;overflow:hidden">
+    <div class="card" style="padding:0;overflow-x:auto">
       <table class="ctable" id="ctable"></table>
     </div>
   </div>
