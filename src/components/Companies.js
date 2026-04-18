@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import '../assets/css/Style.css';
-import karis from '../assets/img/karis.png';
-import mira from '../assets/img/mira.png';
-import refix from '../assets/img/refix.png';
-import covalent from '../assets/img/covalent.png';
+import '../assets/css/Companies.css';
+import karis from '../assets/img/karis.webp';
+import mira from '../assets/img/mira.webp';
+import refix from '../assets/img/refix.webp';
+import covalent from '../assets/img/covalent.webp';
 
 const CARDS = [
     { name: 'Covalent', subtitle: 'Acquired by DataRobot', href: 'https://www.covalent.xyz/', img: covalent, alt: 'Covalent', desc: 'Developer orchestration for GPUs and CPUs.' },

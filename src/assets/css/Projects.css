@@ -1,0 +1,18 @@
+#projects {
+    background-color: var(--color-bg);
+}
+
+.projectsContainer {
+    display: flex;
+    gap: 2rem;
+}
+
+.projectsContainer .projectCard {
+    width: 50%;
+}
+
+@media only screen and (max-width: 650px) {
+    .projectsContainer .projectCard {
+        width: 100%;
+    }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../assets/css/Style.css';
+import '../assets/css/Consulting.css';
 import Card from './subcomponents/Card.js';
 
 const services = [

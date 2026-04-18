@@ -1,0 +1,13 @@
+/* Shared design tokens — imported by /design and /work HTML pages */
+:root {
+    --color-primary: #1282A2;
+    --color-primary-dark: #0e6b87;
+    --color-dark: #1d2d50;
+    --color-text: #2d3748;
+    --color-muted: #4a5568;
+    --color-subtle: #718096;
+    --color-bg: #FEFCFB;
+    --color-bg-alt: #f7fafc;
+    --color-border: #d0e8f0;
+    --color-border-subtle: #e2e8f0;
+}

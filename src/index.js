@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './assets/css/Style.css';
+import './assets/css/global.css';
 import Header from './components/Header.js';
 import Introduction from './components/Introduction.js';
 import About from './components/About.js';

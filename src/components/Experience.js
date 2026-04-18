@@ -1,6 +1,6 @@
 import React from 'react';
 import ExperienceCard from './subcomponents/ExperienceCard.js'
-import '../assets/css/Style.css';
+import '../assets/css/Experience.css';
 
 export default function Experience() {
     const workData = [

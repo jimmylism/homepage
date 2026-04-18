@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../assets/css/Style.css';
 
 export default function ExperienceCard(props) {
     return (

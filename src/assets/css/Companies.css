@@ -1,0 +1,85 @@
+#companies {
+    background-color: var(--color-bg);
+}
+
+.companiesCarousel {
+    overflow: hidden;
+    max-width: 62rem;
+    margin-top: 1rem;
+}
+
+.companiesTrack {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+    margin-bottom: -8px;
+}
+
+.companiesTrack::-webkit-scrollbar {
+    display: none;
+}
+
+.companiesTrack .projectCard {
+    flex: 0 0 36%;
+    scroll-snap-align: start;
+    width: auto;
+}
+
+.companiesImage {
+    object-position: center;
+}
+
+.carouselDots {
+    display: flex;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: 1.25rem;
+}
+
+.carouselDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-border);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, width 0.2s ease;
+}
+
+.carouselDot:hover {
+    background: var(--color-primary);
+    opacity: 0.6;
+}
+
+.carouselDotActive {
+    background: var(--color-primary);
+    width: 20px;
+    border-radius: 4px;
+}
+
+@media only screen and (max-width: 650px) {
+    .companiesCarousel {
+        -webkit-mask-image: none;
+        mask-image: none;
+        overflow: visible;
+    }
+
+    .companiesTrack {
+        flex-direction: column;
+        overflow-x: visible;
+        scroll-snap-type: none;
+    }
+
+    .companiesTrack .projectCard {
+        flex: none;
+        width: 100%;
+    }
+
+    .carouselDots {
+        display: none;
+    }
+}

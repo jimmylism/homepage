@@ -1,0 +1,49 @@
+#experience {
+    background-color: var(--color-bg-alt);
+}
+
+.experienceContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.experienceCard {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1.25rem;
+    transition: border-color 0.15s ease;
+}
+
+.experienceCard:hover {
+    border-color: var(--color-dark);
+}
+
+.experienceCard h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.05rem;
+}
+
+.experienceCard h3 a {
+    color: var(--color-dark);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.experienceCard h3 a:hover {
+    color: var(--color-primary);
+}
+
+.experienceMeta {
+    font-size: 0.85rem;
+    color: var(--color-subtle);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.experienceDescription {
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    line-height: 1.65;
+    margin: 0;
+}

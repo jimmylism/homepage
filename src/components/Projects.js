@@ -1,7 +1,7 @@
 import React from 'react';
-import '../assets/css/Style.css';
-import purrductivity from '../assets/img/purrductivity.png';
-import zenba from '../assets/img/zenba.png';
+import '../assets/css/Projects.css';
+import purrductivity from '../assets/img/purrductivity.webp';
+import zenba from '../assets/img/zenba.webp';
 
 export default function Projects() {
     return (

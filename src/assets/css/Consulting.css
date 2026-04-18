@@ -1,0 +1,66 @@
+#consulting {
+    background-color: #edf6f9;
+}
+
+.consultingIntro {
+    font-size: 1rem;
+    color: var(--color-muted);
+    line-height: 1.75;
+    margin-bottom: 2rem;
+}
+
+.consultingIntro p {
+    margin: 0;
+}
+
+.consultingGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.consultingCard {
+    background: var(--color-bg-alt);
+    padding: 1.25rem 1.5rem;
+}
+
+.consultingTitle {
+    margin: 0 0 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-dark);
+}
+
+.consultingDescription {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-subtle);
+    line-height: 1.6;
+}
+
+.consultingCTA {
+    margin-top: 2rem;
+}
+
+.ctaButton {
+    display: inline-block;
+    padding: 0.65rem 1.75rem;
+    background: var(--color-primary);
+    color: #fff !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.ctaButton:hover {
+    background: var(--color-primary-dark);
+    color: #fff !important;
+}
+
+@media only screen and (max-width: 650px) {
+    .consultingGrid {
+        grid-template-columns: 1fr;
+    }
+}

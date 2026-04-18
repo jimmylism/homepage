@@ -1155,10 +1155,15 @@
             .section-eyebrow { font-size: 0.65rem; }
 
             .work-title { font-size: clamp(1.5rem, 5vw, 2.6rem); }
-            .work-desc { font-size: 0.85rem; }
+            .work-desc { font-size: 0.85rem; max-width: none; }
 
             .about-strip { padding: 3rem 1.25rem; }
             .about-text { font-size: clamp(1.1rem, 4vw, 2rem); }
+
+            /* Divider: stack vertically so long quote doesn't overflow */
+            .design-divider { flex-direction: column; gap: 1rem; padding: 2.5rem 1.25rem; text-align: center; }
+            .divider-text { white-space: normal; }
+            .divider-line { max-width: 60px; }
 
             /* Mock previews: reduce aspect ratio so they're not huge on mobile */
             .work-preview { aspect-ratio: 4/3; }
