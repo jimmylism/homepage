@@ -4,8 +4,10 @@ import karis from '../assets/img/karis.webp';
 import mira from '../assets/img/mira.webp';
 import refix from '../assets/img/refix.webp';
 import covalent from '../assets/img/covalent.webp';
+import retell from '../assets/img/retell.png';
 
 const CARDS = [
+    { name: 'Retell AI', href: 'https://www.retellai.com/', img: retell, alt: 'Retell AI', desc: 'AI voice agent platform for phone call automation.' },
     { name: 'Covalent', subtitle: 'Acquired by DataRobot', href: 'https://www.covalent.xyz/', img: covalent, alt: 'Covalent', desc: 'Developer orchestration for GPUs and CPUs.' },
     { name: 'Refix', href: 'https://refix.ai/',           img: refix, alt: 'Refix', desc: 'Product analytics for teams that want to move fast.' },
     { name: 'Mira',  href: 'https://mira.ant-agent.ai/',  img: mira,  alt: 'Mira',  desc: 'Turn multimodal content into automated workflows.' },
